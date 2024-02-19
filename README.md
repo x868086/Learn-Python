@@ -224,11 +224,195 @@ f-string() 模板字符串
 
 
 #### 4.3 字符编码
+计算机以统一的方式存储和处理字符，无论是字母、数字、符号还是特殊字符。**字符编码通常是将字符集中每个字符映射为一个或多个字节(binary digits)**
+
+常见的字符编码包括：
+**ASCII 美国信息交换标准代码**，包含**128**个字符，英文大写小写，数字，标点，控制字符。每个字符对应**一个字节**长度**8bit**
+
+**unicode 统一字符编码**，将世界各种语言的**每个字符定义一个唯一的编码**，以满足跨语言、跨平台的文本信息转换。unicode通常**使用一个特定**的编码方案来实现，最常见的unicode编码方案就是**UTF-8**。常见的\u是unicode转义序列。
+
+**UTF-8** 可变长度编码方式，UTF-8 就是在互联网上使用最广的一种 Unicode 的实现方式，占用**1-4**个字节
+
+**UTF-16**占用**2-4**个字节
+
+**UTF-32**始终占用**4**个字节
+
+**GBK**
+
+```python
+1 text='你好，123abcde'
+2 encode_text = text.encode('utf-8') #将字符串用utf-8格式编码
+3 decode_text = encode_text.decode('utf-8') #用utf-8格式解码字符串
+4 text2 = text1.encode('ascii', error='ignore') #忽略无法处理的字符
+5 text3 = text1.encode('ascii', error='replace') #用?代替无法处理的字符
+6 with codecs.open('./text.txt', encoding='utf-8') as file #codecs包读取text.txt文件，用utf-8编码方式打开
+```
+
+unicode字符串，Unicode字符串通常用于表示包含非ASCII字符的字符串，比如中文或者特殊符号。Unicode字符串表示的是字符串本身，而不是它们的编码形式
+unicode字符串 `print(u'你好，python')`
+
+二进制字符串 `print(b'hello,python')`  *这里不能有中文*
 
 ### 5. list列表类型  python中的有序数据类型
 <span class="asso">
 JS: Array
 </span>
+
+List:`[1,2,2,1,'hello','abc',12.5, [2,3,22]]`
+list是有序的，而且可以嵌套list, List可以通过赋值改变成员的值
+
+#### 访问列表
+List[0] 返回列表的第0个元素
+如果索引号是单个数字则返回结果是List成员的字符串
+如果索引号是一个区间值List<span class="danger">[0:4]</span>返回列表的第0到第4个元素(不含第4个)组成的<span class="danger">新列表</span>
+
+#### 连接两个列表 <span class="asso">JS: concat方法</span>
+`[1,2,3,4] + ['a','a1','aa'] #返回 [1,2,3,4,'a','a1','aa'] `
+ 
+
+#### 重复列表
+`[1,2] * 3 #返回 [1,2,1,2,1,2]`
+
+#### 列表list的常用方法
+```python
+.append() #添加元素，改变原列表(如果参数是列表则会将参数当成一个元素插入)
+.extend() #添加元素，改变原列表(如果参数是列表则会挨个插入)
++ #不改变原列表但生成一个新的列表
+.remove(2) #删除指定的元素，第一个匹配的元素被删除
+.clear() #清空列表
+del list[0] #del是语句，删除列表list指定索引号的元素，参数可以指定区间，可以指定步长
+del list[1:6:3] #del是语句，删除列表list从第1个开始到第6个，间隔3个删除
+.insert(2,'hello') #在指定位置插入元素
+tuple(list1) #tuple函数，转换list为tuple
+tuple(range(10)) #tuple函数，转换range为tuple
+list(tuple1) #list函数，转换tuple为list
+list(range(10)) #list函数，转换range为list
+
+.sort() #列表的排序，默认升序，不会生成新列表仅修改原列表
+.sorted(x) #排序并复制，对x做排序生成新的经过排序后的列表
+1 x1=[2,3,4,5,6]
+2 x2=['d','c','a','b']
+3 x1.sort(reverse=True) #reverse反向排列，[6,5,4,3,2]
+4 x2.sort() #默认升序排列 ['a','b','c','d']
+5
+6 x1=[6,7,8,9]
+7 x2=sorted(x1, reverse=True) # sorted(x1) 会生成一个经过排序后的新列表
+8 x3=x1.sort(reverse=True) # .sort()方法排序修改原列表，不会生成新列表，所以x3是none
+9 print(x1,x2,x3) # [9, 8, 7, 6] [9, 8, 7, 6] None
+
+```
+.sort() #列表的排序，默认升序，**不会生成新列表**仅修改原列表
+.sorted(x) #排序并复制，对x做排序**生成新的**经过排序后的列表
+
+
+### 6. tuple元组类型  python中的有序数据类型
+Tuple: `(1,2,3,4,'hello')` 元组是<span class="danger"><b>不可变的List</b></span>,即元组的<span class="danger"><b>元素不可以赋值</b></span>。<span class="danger">列表有的方法元组也有</span>
+
+【1】定义只有一个元素的元组`type((1, ))`返回**tuple**。如果不加逗号是(1)则python编译器默认(1)是求值运算。
+【2】定义空的元组`type(tuple())` 返回tuple，定义空的元组 type(())
+
+
+<span class="danger"><b>序列包含可变序列List, 和不可变序列Tuple，字符串String</b></span>，序列的特点类似JS中复杂类型的变量在内存中的特点，属于值地址引用。栈内存中存放的是堆内存中的内存地址。
+
+#### 字符串、列表、元组共有的方法
+【1】切片[0:10:2] 切片方法的 **<span class="danger">第三个参数是步长</span>**
+【2】连接[1]+[2]
+【3】判断元素是否**在序列内** 
+2 **in** [1,2,3] 返回True 
+<span class="asso">JS: [1,2,3].includes(2)</span>
+
+判断是否**不在序列内** 
+2 **not in** [1,2,3] 返回False
+【4】序列的长度 **len(**[1,2,3]**)**，len('hello world')，len((2,))
+【5】序列的最大值,最小值 **max(**[1,2,3]**)**，**min(**(1,2)**)** ,
+**max(**'hello world'**)** 字符串最大值、最小值是字符串ASCII编码的最大值，最小值。ord('param') 转换参数为ASCII编码，参数必须为**单个字符**
+【6】序列的 **方法** 使用 **.()** 调用
+```python
+1 x=[1,2,3,2,8,2,7,5,2]
+2 print(x.index(5)) #序列的方法，指定元素，第一个匹配上的，在序列中的序号
+3 print(x.count(2)) #序列的方法，指定元素，第一个匹配上的在序列中出现的次数
+```
+#### 序列的切片和步长 <span class="danger">适用list, tuple, string</span>
+```python
+1 x=[1,2,3,4,5,6,7,8,9]
+2 print(x[2:5]) #返回索引2-5的值，不包含第5个值
+3 print(x[:5]) #从第0个值截至到第5位，不包含第5个值
+4 print(x[2:]) #从第2个开始到最后一个值
+5 print(x[:-1]) #从第0个值到最后一个值
+7 [3, 4, 5]
+8 [1, 2, 3, 4, 5]
+9 [3, 4, 5, 6, 7, 8, 9]
+10 [1, 2, 3, 4, 5, 6, 7, 8]
+11
+12 x=[1,2,3,4,5,6,7,8,9,'hello','world']
+13 print(x[2:9:2]) #第2个到第9个不包含9之间的，每两个间隔取值
+14 print(x[1:10:3]) #第1个到第10个不包含10之间的，每3个间隔取值
+16 [3, 5, 7, 9]
+17 [2, 5, 8]
+
+```
+
+#### 使用<span class="danger">.copy()</span>方法可<span class="danger">浅拷贝</span>成两个独立的序列
+
+
+
+
+### 7. set集合类型 python中的无序数据类型
+集合是<span class="danger"><b>无序的</b></span>数据类型，无法通过下标序列号获取元素。集合的元素是<span class="danger"><b>没有重复的</b></span>set适用于需要**存储一组唯一元素**并进行**集合**运算的场景
+<span class="asso">JS:js中的set()无重复，但js中的set是有序的。</span>
+set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
+获取集合的长度 **len(**{1,2,3}**)**
+判断是否在集合内 1 **in** {1,2,3}
+判断是否不在集合内 1 **not in** {1,2,3}
+求两个集合的**差集**，用**减法-**，{1,2,3,4,5,6} **-** {3,4} 返回{1,2,5,6}
+求两个集合的**交集∩**，共有的元素，**用&** ，{1,2,3,4,5,6} & {3,4} 返回{3,4}
+求两个集合的**并集∪**，**用 |**，{1,2,3,4,5,6} **|** {5,6,7} //返回{1,2,3,4,5,6,7}
+
+
+
+
+
+
+
+
+
+### 8. dict字典类型 python中的无序数据类型
+dict: { 'a':100, 'b':'hello' } dict是**无序列表** dict适用于需要通过**唯一的键**来查找、存储和操作值的场景，例如存储联系人的姓名和电话号码。
+<span class="asso">JS:js中的Object对象</span>
+字典中不能有重复的key，存在重复的key时，后添加的key会替代先添加的key。
+字典的键key可以是字符串也可以是数值,{**1**:'a',**'1'**:'b'} ，这里**两个key1是不同的key**
+字典的**key 必须是不可变的类型**，比如int, str,tuple，list可变所以不能作为key
+获取key对应的value值 {'a':1,'b':2}**['a']**
+定义空的字典type(**dict()**)
+
+#### 字典的常用方法
+dic1**.update**(dic2) #合并字典，**会改变dic1**
+dic3 = dic1 **.copy()** #浅复制一个字典
+a1 = **len(** dic3 **)** #返回字典长度
+'a' **in** dic1 #判断key是否在某个字典中
+`lst1 = [['a',1],['b',2]]` `dict1 = dict(lst1)` #将嵌套数组lst1转成key,value格式
+`dict([('a',1),('b',2)])` #将数组嵌套的元组转成key,value格式
+`keys1=['a','b','c']` `dic1 = dict.fromkeys(keys1,0)` #生成**值为0**只有键名的字典，fromkeys方法的第二个参数是，填充生成字典的值
+dic1 **.get('key')** #获取字典key对应的value
+dic1 **.keys()** #获取dic1的所有的key
+dic1 **.values()** #获取dic1的所有的value
+dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果的格式是 **[(** 'key','value' **)]**
+
+#### 遍历字典
+```python
+1 for keys in dic1: #遍历dic1的keys
+2 print(keys)
+3
+4 for values in dic1.values(): #遍历dic1的values
+5 print(values)
+6 
+7 for (k,v) in dic1.items(): #遍历dic1的key,value 键值对
+8 print(k,v)
+```
+
+
+
+
 
 ----
 <span class="success">
