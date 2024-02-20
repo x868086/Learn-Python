@@ -55,7 +55,7 @@ Learn-Python
 相对于编译型语言（c,c++），python和javascript一样属于解释型语言，速度慢。python的运行效率低，但开发效率高。
 
 
-##基本数据类型
+## 基本数据类型
 ### 1. Number
 数字类型(大的分类，下面还有整数int，浮点数float, 布尔类型bool（python中**bool类型属于Number类型的子类**），复数类型（数字j）等子分类.
 <span class="warning"><b>python不区分单精度和双精度浮点数，默认双精度，int也不细分short,long整型</b></span>
@@ -411,7 +411,7 @@ dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果
 8 print(k,v)
 ```
 
-### 9. 运算符
+## 运算符
 算术运算符： +， - ，*，/，**， //, %
 赋值运算符： +=，-=， *=， /=， %=， **=，//=
 比较运算符：==，!=， >=， <=， >， <
