@@ -358,6 +358,7 @@ Tuple: `(1,2,3,4,'hello')` 元组是<span class="danger"><b>不可变的List</b>
 
 
 ### 7. set集合类型 python中的无序数据类型
+![集合](./img/set_python.jpg)
 集合是<span class="danger"><b>无序的</b></span>数据类型，无法通过下标序列号获取元素。集合的元素是<span class="danger"><b>没有重复的</b></span>set适用于需要**存储一组唯一元素**并进行**集合**运算的场景
 <span class="asso">JS:js中的set()无重复，但js中的set是有序的。</span>
 set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
@@ -409,6 +410,103 @@ dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果
 7 for (k,v) in dic1.items(): #遍历dic1的key,value 键值对
 8 print(k,v)
 ```
+
+### 9. 运算符
+算术运算符： +， - ，*，/，**， //, %
+赋值运算符： +=，-=， *=， /=， %=， **=，//=
+比较运算符：==，!=， >=， <=， >， <
+逻辑运算符：and， or，not <span class="asso"> JS: &&, ||, !</span>
+成员运算符： in，not in <span class="asso"> JS: 没有not in 只有in</span>
+身份运算符：is，is not <span class="asso"> JS: Object.is(param1, param2) 判断两个值是否完全相等即==) </span>
+位运算符：&， |， ^，>>，<<，~ （<span class="danger">按位</span> &,|,^,>>,<<,~）
+python中没有a ++, a-- 这种自增自减运算符
+
+
+<span class="danger">比较运算符</span>在比较<span class="danger">字符串</span>的时候会调用<span class="danger">ord()</span>函数，将两个待比较的字符串各自分拆后逐个字符转成ASCII编码来比较。比如判断abc<abe比较时，会先比较a,a，在比较b,b，最后比较c,e
+
+<span class="danger">比较运算符</span>在比较<span class="danger">列表</span>的时候会将两个列表的成员逐一比较，比如判断[1,2,3]<[2,3,4]比较时，会先比较1<2，再比较2<3，最后比较3<4。元组的比较也是类似
+
+
+
+逻辑运算符可以比较bool型，数值型，字符串。在python中做逻辑运算时会自动转换数据类型：int、float类型中的0会被转换为False，大于0或小于0的会被转换为True
+
+str类型中，**空字符串**''会被转换成False，注意不是' '(**里面有空格不是空字符串**)
+
+list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <span class="asso">JS:这里不同于js中的空数组，js空数据会被转换成true</span>
+
+
+身份运算符:**is, not is**, 判断的是两个变量的<span class="danger">值和值的值内存地址</span>是否相同
+a=1 b=1.0
+判断a <span class="danger">==</span> b时返回True，比较运算符判断的是两个值是否相等，不看值的内存地址。
+判断a <span class="danger">is</span> b 的时候返回False，身份运算符判断值和值的内存地址是否相等
+
+python中判断一个变量是否是某个类型的实例，使用
+<span class="danger">isinstance： isinstance('a', str) #判断'a'是否是str类型</span>
+<span class="danger">isinstance: isinstance(param1,(str, tuple, set)) #判断param1是否是str,tuple,set中的任意一种</span>
+
+<span class="asso"><b>JS:判断对象是否是某个构造函数（类）的实例，str instanceof String // 这里str 必须是str = new String('a')的结果，这样才是String函数生成的实例。
+</b></span>
+
+
+#### 运算符优先级
+赋值运算是右结合，从等号右边往左执行。如果表达式优先级顺序不太清晰，使用括号显式的标记运算优先级。
+**算术运算符>比较运算符>逻辑运算符**
+![python运算符](./img/operator_python.jpg)
+
+##### 算术运算符
+a+b, a-b, a*b, a/b
+a%b #取模，求除法余数
+a//b #除法取整数
+a**b #幂运算，a的b次方
+
+##### 比较运算符
+
+a **==** b
+a **>=** b
+a **!=** b
+a **>** b
+a **<** b
+
+##### 逻辑运算符
+True **and** False, True **or** False, **not** True
+
+##### 成员运算符
+lst = [2,3,4]
+dis = {'a':1,'b':2}
+print(1 **in** lst) #返回true
+print('c' **in** dis) #返回false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
