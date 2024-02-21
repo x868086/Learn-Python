@@ -58,16 +58,16 @@ Learn-Python
 ## 基本数据类型
 ### 1. Number
 数字类型(大的分类，下面还有整数int，浮点数float, 布尔类型bool（python中**bool类型属于Number类型的子类**），复数类型（数字j）等子分类.
-<span class="warning"><b>python不区分单精度和双精度浮点数，默认双精度，int也不细分short,long整型</b></span>
+<span class="danger"><b>python不区分单精度和双精度浮点数，默认双精度，int也不细分short,long整型</b></span>
 ```python
 >>> type(1*1) // class 'int'
 >>> type(1*1.0) // class 'float'
 >>> type(1/1) // class 'float' 两个整型相除结果类型为浮点数
 >>> type(1//1) //class 'int' 两个整型用双斜杠//相除结果类型为整型
 ```
-<b class="warning">单斜杠</b> 除法自动转换结果为<b class="warning">浮点数</b>，<b class="warning">双斜杠</b>除法是整除<b class="warning">不考虑余数</b>
+<b class="danger">单斜杠</b> 除法自动转换结果为<b class="danger">浮点数</b>，<b class="danger">双斜杠</b>除法是整除<b class="danger">不考虑余数</b>
 
-<span class="asso">JS: Math.floor()  ,Math.ceil()   ,Math.round()   ,ParsrInt()</span>
+<span class="asso"><b>JS: Math.floor()  ,Math.ceil()   ,Math.round()   ,ParsrInt()</b></span>
 <b class="asso">JS: typeof(134) </b>
 
 
@@ -91,7 +91,7 @@ bin(10), bin(0x12), bin(0o10)
 int() 转换成10进制数方法
 int('123') //123
 int(123) // 123
-<span class="danger"> int(123.01) //返回错误 </span>
+<b class="danger"> int(123.01) //返回错误 </b>
 hex() 转换成16进制方法
 oct() 转换成8进制方法
 float() 转成浮点数
@@ -99,9 +99,9 @@ js:parseInt('123'), parseFloat('123.2')
 
 
 ### 3. bool 布尔类型
-<div class="asso">
+<b class="asso">
 JS: Boolean()
-</div>
+</b>
 
 ```python
 type(True) #class 'bool'
@@ -122,11 +122,11 @@ bool({}) #False
 bool(None) #False
 ```
 
-<div class="asso">
+<b class="asso">
 js:Boolean('123')
 js:true,flase python:True,False
 js数组，python列表；js:对象，python元组
-</div>
+</b>
 
 ### 4. str 字符串类型
 单引号 'this is a apple'
@@ -141,10 +141,10 @@ hello world
 ```
 
 `print('hello world\nhello world') `
-print函数加转义字符实际也会显示成两行 hello world<span class="danger">\n</span> hello world
+print函数加转义字符实际也会显示成两行 hello world<b class="danger">\n</b> hello world
 
 `print(r'c:\na1\na2') `
-字符串前面加r print(<span class="danger">r</span>'String')表示的是原始字符串（所见即所得）
+字符串前面加r print(<b class="danger">r</b>'String')表示的是原始字符串（所见即所得）
 
 转义字符：换行\n, 单引号\', 制表符\t
 
@@ -152,10 +152,10 @@ print函数加转义字符实际也会显示成两行 hello world<span class="da
 #### 4.1 字符串运算
 `'hello world'[0] ` 取字符串第0个字符
 `'hello world'[0:4]`  取字符串0到4个字符串，不包含第4个
-`'hello world'[6: ]`   <span class="danger"> [6: ]</span> 从第6位截取到末尾，返回world。省略即开始或末尾
-`'hello world'[:-4]`  <span class="danger"> [:-4]</span> 从0位开始**往后截取**到负4位，返回'hello w'。省略即开始或末尾
+`'hello world'[6: ]`   <b class="danger"> [6: ]</b> 从第6位截取到末尾，返回world。省略即开始或末尾
+`'hello world'[:-4]`  <b class="danger"> [:-4]</b> 从0位开始**往后截取**到负4位，返回'hello w'。省略即开始或末尾
 `'hello world'[-4:]`  从倒数第4位开始**往后截取**，返回'orld'
-<span class="asso">JS:substring(0,4)</span>
+<b class="asso">JS:substring(0,4)</b>
 **python中字符串也是有序数据类型**
 **string是不可变的序列，常用操作方法:**
 
@@ -188,9 +188,9 @@ js:['a','b','c','d'].join('-')
 ```
 
 #### 4.2 格式化字符串
-<span class="danger">
+<b class="danger">
 .format()方法格式化字符串，{n}中可以指定传入参数的索引号，可以指定变量名称
-</span>
+</b>
 
 ```python
 1 print("{}{}{}".format('a','b','c')) #abc
@@ -205,9 +205,9 @@ js:['a','b','c','d'].join('-')
 10 print("number is {:.2f}%".format(45.23)) #number is 45.23% 加%自动转换成百分比
 ```
 
-<span class="danger">
+<b class="danger">
 f-string() 模板字符串
-</span>
+</b>
 
 ```python
 1 >>> num = 2
@@ -254,9 +254,9 @@ unicode字符串 `print(u'你好，python')`
 二进制字符串 `print(b'hello,python')`  *这里不能有中文*
 
 ### 5. list列表类型  python中的有序数据类型
-<span class="asso">
+<b class="asso">
 JS: Array
-</span>
+</b>
 
 List:`[1,2,2,1,'hello','abc',12.5, [2,3,22]]`
 list是有序的，而且可以嵌套list, List可以通过赋值改变成员的值
@@ -264,9 +264,9 @@ list是有序的，而且可以嵌套list, List可以通过赋值改变成员的
 #### 访问列表
 List[0] 返回列表的第0个元素
 如果索引号是单个数字则返回结果是List成员的字符串
-如果索引号是一个区间值List<span class="danger">[0:4]</span>返回列表的第0到第4个元素(不含第4个)组成的<span class="danger">新列表</span>
+如果索引号是一个区间值List<b class="danger">[0:4]</b>返回列表的第0到第4个元素(不含第4个)组成的<b class="danger">新列表</b>
 
-#### 连接两个列表 <span class="asso">JS: concat方法</span>
+#### 连接两个列表 <b class="asso">JS: concat方法</b>
 `[1,2,3,4] + ['a','a1','aa'] #返回 [1,2,3,4,'a','a1','aa'] `
  
 
@@ -306,20 +306,20 @@ list(range(10)) #list函数，转换range为list
 
 
 ### 6. tuple元组类型  python中的有序数据类型
-Tuple: `(1,2,3,4,'hello')` 元组是<span class="danger"><b>不可变的List</b></span>,即元组的<span class="danger"><b>元素不可以赋值</b></span>。<span class="danger">列表有的方法元组也有</span>
+Tuple: `(1,2,3,4,'hello')` 元组是<b class="danger">不可变的List</b>,即元组的<b class="danger">元素不可以赋值</b>。<b class="danger">列表有的方法元组也有</b>
 
 【1】定义只有一个元素的元组`type((1, ))`返回**tuple**。如果不加逗号是(1)则python编译器默认(1)是求值运算。
 【2】定义空的元组`type(tuple())` 返回tuple，定义空的元组 type(())
 
 
-<span class="danger"><b>序列包含可变序列List, 和不可变序列Tuple，字符串String</b></span>，序列的特点类似JS中复杂类型的变量在内存中的特点，属于值地址引用。栈内存中存放的是堆内存中的内存地址。
+<b class="danger">序列包含可变序列List, 和不可变序列Tuple，字符串String</b>，序列的特点类似JS中复杂类型的变量在内存中的特点，属于值地址引用。栈内存中存放的是堆内存中的内存地址。
 
 #### 字符串、列表、元组共有的方法
-【1】切片[0:10:2] 切片方法的 **<span class="danger">第三个参数是步长</span>**
+【1】切片[0:10:2] 切片方法的 <b class="danger">第三个参数是步长</b>
 【2】连接[1]+[2]
 【3】判断元素是否**在序列内** 
 2 **in** [1,2,3] 返回True 
-<span class="asso">JS: [1,2,3].includes(2)</span>
+<b class="asso">JS: [1,2,3].includes(2)</b>
 
 判断是否**不在序列内** 
 2 **not in** [1,2,3] 返回False
@@ -332,7 +332,7 @@ Tuple: `(1,2,3,4,'hello')` 元组是<span class="danger"><b>不可变的List</b>
 2 print(x.index(5)) #序列的方法，指定元素，第一个匹配上的，在序列中的序号
 3 print(x.count(2)) #序列的方法，指定元素，第一个匹配上的在序列中出现的次数
 ```
-#### 序列的切片和步长 <span class="danger">适用list, tuple, string</span>
+#### 序列的切片和步长 <b class="danger">适用list, tuple, string</b>
 ```python
 1 x=[1,2,3,4,5,6,7,8,9]
 2 print(x[2:5]) #返回索引2-5的值，不包含第5个值
@@ -352,15 +352,15 @@ Tuple: `(1,2,3,4,'hello')` 元组是<span class="danger"><b>不可变的List</b>
 
 ```
 
-#### 使用<span class="danger">.copy()</span>方法可<span class="danger">浅拷贝</span>成两个独立的序列
+#### 使用<b class="danger">.copy()</b>方法可<b class="danger">浅拷贝</b>成两个独立的序列
 
 
 
 
 ### 7. set集合类型 python中的无序数据类型
 ![集合](./img/set_python.jpg)
-集合是<span class="danger"><b>无序的</b></span>数据类型，无法通过下标序列号获取元素。集合的元素是<span class="danger"><b>没有重复的</b></span>set适用于需要**存储一组唯一元素**并进行**集合**运算的场景
-<span class="asso">JS:js中的set()无重复，但js中的set是有序的。</span>
+集合是<b class="danger">无序的</b>数据类型，无法通过下标序列号获取元素。集合的元素是<b class="danger">没有重复的</b>set适用于需要**存储一组唯一元素**并进行**集合**运算的场景
+<b class="asso">JS:js中的set()无重复，但js中的set是有序的。</b>
 set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
 获取集合的长度 **len(**{1,2,3}**)**
 判断是否在集合内 1 **in** {1,2,3}
@@ -379,7 +379,7 @@ set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
 
 ### 8. dict字典类型 python中的无序数据类型
 dict: { 'a':100, 'b':'hello' } dict是**无序列表** dict适用于需要通过**唯一的键**来查找、存储和操作值的场景，例如存储联系人的姓名和电话号码。
-<span class="asso">JS:js中的Object对象</span>
+<b class="asso">JS:js中的Object对象</b>
 字典中不能有重复的key，存在重复的key时，后添加的key会替代先添加的key。
 字典的键key可以是字符串也可以是数值,{**1**:'a',**'1'**:'b'} ，这里**两个key1是不同的key**
 字典的**key 必须是不可变的类型**，比如int, str,tuple，list可变所以不能作为key
@@ -413,10 +413,10 @@ dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果
 
 ## python变量
 值类型 **(不可变)：int，str，tuple，**即便是str[0]='aa' 这种对字符串的操作也不能改变字符串str原来的值。
-<span class="asso"><b>JS:'string'[0]=1 无效</b></span>
+<b class="asso">JS:'string'[0]=1 无效</b>
 
 引用类型**（可变）：list，set，dict** 引用类型的成员的值可以改变。`[1,2][0]='a'`
-<span class="danger">id(var) 可以显示一个变量在内存中的地址</span>
+<b class="danger">id(var) 可以显示一个变量在内存中的地址</b>
 
 
 tuple类型不能修改成员，也不能追加成员。tuple的使用场景主要是描述保持不变的数组类型的数据。
@@ -428,25 +428,25 @@ tuple类型不能修改成员，也不能追加成员。tuple的使用场景主�
 4 a[3].append('d')
 5 #返回(1,2,3,[1,2,'4','d'])
 ```
-user_account = <span class="danger"><b>input()</b></span> 命令行输入时，使用input()函数
+user_account = <b class="danger">input()</b> 命令行输入时，使用input()函数
 
 python中没有常量概念，**只有形式上的常量，变量名使用大写**，python文件的顶部，一般有一段注,用来说明该文件模块的内容。
 
 
 ## 运算符
-算术运算符： +， - ，*，/，**， //, %
-赋值运算符： +=，-=， *=， /=， %=， **=，//=
-比较运算符：==，!=， >=， <=， >， <
-逻辑运算符：and， or，not <span class="asso"> JS: &&, ||, !</span>
-成员运算符： in，not in <span class="asso"> JS: 没有not in 只有in</span>
-身份运算符：is，is not <span class="asso"> JS: Object.is(param1, param2) 判断两个值是否完全相等即==) </span>
-位运算符：&， |， ^，>>，<<，~ （<span class="danger">按位</span> &,|,^,>>,<<,~）
+算术运算符： `+， - ，*，/，**， //, %`
+赋值运算符： `+=，-=， *=， /=， %=， **=，//=`
+比较运算符：`==，!=， >=， <=， >， <`
+逻辑运算符：`and， or，not  `<b class="asso"> JS: &&, ||, !</b>
+成员运算符： `in，not in `<b class="asso"> JS: 没有not in 只有in</b>
+身份运算符：`is，is not` <b class="asso"> JS: Object.is(param1, param2) 判断两个值是否完全相等即==) </b>
+位运算符：&， |， ^，>>，<<，~ （<b class="danger">按位</b> &,|,^,>>,<<,~）
 python中没有a ++, a-- 这种自增自减运算符
 
 
-<span class="danger">比较运算符</span>在比较<span class="danger">字符串</span>的时候会调用<span class="danger">ord()</span>函数，将两个待比较的字符串各自分拆后逐个字符转成ASCII编码来比较。比如判断abc<abe比较时，会先比较a,a，在比较b,b，最后比较c,e
+<b class="danger">比较运算符</b>在比较<b class="danger">字符串</b>的时候会调用<b class="danger">ord()</b>函数，将两个待比较的字符串各自分拆后逐个字符转成ASCII编码来比较。比如判断abc<abe比较时，会先比较a,a，在比较b,b，最后比较c,e
 
-<span class="danger">比较运算符</span>在比较<span class="danger">列表</span>的时候会将两个列表的成员逐一比较，比如判断[1,2,3]<[2,3,4]比较时，会先比较1<2，再比较2<3，最后比较3<4。元组的比较也是类似
+<b class="danger">比较运算符</b>在比较<b class="danger">列表</b>的时候会将两个列表的成员逐一比较，比如判断[1,2,3]<[2,3,4]比较时，会先比较1<2，再比较2<3，最后比较3<4。元组的比较也是类似
 
 
 
@@ -454,17 +454,17 @@ python中没有a ++, a-- 这种自增自减运算符
 
 str类型中，**空字符串**''会被转换成False，注意不是' '(**里面有空格不是空字符串**)
 
-list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <span class="asso">JS:这里不同于js中的空数组，js空数据会被转换成true</span>
+list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <b class="asso">JS:这里不同于js中的空数组，js空数据会被转换成true</b>
 
 
-身份运算符:**is, not is**, 判断的是两个变量的<span class="danger">值和值的值内存地址</span>是否相同
+身份运算符:**is, not is**, 判断的是两个变量的<b class="danger">值和值的值内存地址</b>是否相同
 a=1 b=1.0
-判断a <span class="danger">==</span> b时返回True，比较运算符判断的是两个值是否相等，不看值的内存地址。
-判断a <span class="danger">is</span> b 的时候返回False，身份运算符判断值和值的内存地址是否相等
+判断a <b class="danger">==</b> b时返回True，比较运算符判断的是两个值是否相等，不看值的内存地址。
+判断a <b class="danger">is</b> b 的时候返回False，身份运算符判断值和值的内存地址是否相等
 
 python中判断一个变量是否是某个类型的实例，使用
-<span class="danger">isinstance： isinstance('a', str) #判断'a'是否是str类型</span>
-<span class="danger">isinstance: isinstance(param1,(str, tuple, set)) #判断param1是否是str,tuple,set中的任意一种</span>
+<b class="danger">isinstance： isinstance('a', str) #判断'a'是否是str类型</b>
+<b class="danger">isinstance: isinstance(param1,(str, tuple, set)) #判断param1是否是str,tuple,set中的任意一种</b>
 
 <span class="asso"><b>JS:判断对象是否是某个构造函数（类）的实例，str instanceof String // 这里str 必须是str = new String('a')的结果，这样才是String函数生成的实例。
 </b></span>
@@ -512,7 +512,7 @@ a is not c # True
 python编码规范：
 行末尾不强制加分号结尾。不需要用{}包裹代码块，python使用缩进表示代码块
 ### 1. 条件控制语句 if-else
-<span class="danger">pass</span> 语句在python中用来作占位，使语句能顺利执行下去不出错
+<b class="danger">pass</b> 语句在python中用来作占位，使语句能顺利执行下去不出错
 ```python
 1 if condition_test:
 2   pass
@@ -521,7 +521,7 @@ python编码规范：
 5 else:
 6   pass
 ```
-<span class="asso"><b>JS:if () {} else if () {} else {}</b></span>
+<b class="asso">JS:if () {} else if () {} else {}</b>
 ### 2. 循环while else
 ```python
 1 while condition:
@@ -536,9 +536,9 @@ python编码规范：
 5 else:
 6   print('EOF')
 ```
-while循环的使用场景是，设定condition为条件判断，condition条件为true时就一直执行语句块，条件判断为<span class="danger">false</span>时就执行<span class="danger">else</span>后面的语句块。while多用在递归的场景中。
+while循环的使用场景是，设定condition为条件判断，condition条件为true时就一直执行语句块，条件判断为<b class="danger">false</b>时就执行<b class="danger">else</b>后面的语句块。while多用在递归的场景中。
 
-<span class="asso"><b>while(){}, do{} while</b></span>
+<b class="asso">while(){}, do{} while</b>
 
 ### 3. 循环for else
 for 循环用来遍历/循环 序列、集合、字典
@@ -547,7 +547,7 @@ for **target_list in expression_list**:
     pass1
 else:
     pass2
-<span class="danger">else</span> 语句块在for循环<span class="danger">正常结束</span>（**非break终止**）后执行
+<b class="danger">else</b> 语句块在for循环<b class="danger">正常结束</b>（**非break终止**）后执行
 ```python
 1 a = [['a','b','c'],(1,2,3)]
 2 for i in a:
@@ -557,11 +557,11 @@ else:
 6 else:
 7   print('EOF iterate done')
 ```
-print(a,<span class="danger"><b>end = '|'</b></span>)
-print函数使用<span class="danger"><b>end参数</b></span>可以将需要打印的元素横向间隔排列。
+print(a,<b class="danger">end = '|'</b>)
+print函数使用<b class="danger">end参数</b>可以将需要打印的元素横向间隔排列。
 
 ### 4.循环控制 终止循环 使用break, continue
-break 终止循环跳出整个循环，continue 跳过本次循环但会继续执行下一次循环。<span class="danger"><b>break</b></span>会<span class="danger"><b>中断</b></span>for循环遍历，使for循环结束后的else不执行，但<span class="danger"><b>在循环嵌套的场景下，break只会中断所在层级的循环</b></span>，<span class="danger"><b>对外层循环不会中断</b></span>
+break 终止循环跳出整个循环，continue 跳过本次循环但会继续执行下一次循环。<b class="danger">break</b>会<b class="danger">中断</b>for循环遍历，使for循环结束后的else不执行，但<b class="danger">在循环嵌套的场景下，break只会中断所在层级的循环</b>，<b class="danger">对外层循环不会中断</b>
 ```python
 1 a = [1,2,3]
 2 for x in a:
@@ -585,7 +585,7 @@ break 终止循环跳出整个循环，continue 跳过本次循环但会继续�
 ```
 
 #### for循环的范围限定使用range()函数
-<span class="asso"><b>JS for 循环：</b></span>
+<b class="asso">JS for 循环：</b>
 ```js
 1 // js文件
 2 let a = [1,2,3,4,5,6,7,8,9,10]
@@ -608,7 +608,7 @@ break 终止循环跳出整个循环，continue 跳过本次循环但会继续�
 #### range列表和生成器
 **range(num1, num2, length)**
 range范围num1是起始数值，num2是终止数值但不包含num2，length是步长，步长可以为负数表示递减。
-<span class="danger"><b>range生成一个整数区间,不包含末尾一位，</b></span>类型为`<class range>`， <span class="danger"><b>range不是一个列表但可以使用索引访问值，使用括号表示range，逗号表示范围,</b></span> **第三个参数代表步长**。使用 **list()** 函数可以生成由 **range** 指定区间范围的 **列表** ，使用 **tuple()** 可以生成指定范围**元组**，使用 **set()** 可以生成指定范围 **集合**
+<b class="danger">range生成一个整数区间,不包含末尾一位，</b>类型为`<class range>`， <b class="danger">range不是一个列表但可以使用索引访问值，使用括号表示range，逗号表示范围,</b> **第三个参数代表步长**。使用 **list()** 函数可以生成由 **range** 指定区间范围的 **列表** ，使用 **tuple()** 可以生成指定范围**元组**，使用 **set()** 可以生成指定范围 **集合**
 ```python
 1 for x in range(10,2,-2):
 2   print(x)
@@ -627,6 +627,8 @@ y2 = set(x) #转成集合
 y2
 {0, 1, 2, 3, 4}
 ```
+
+
 
 <span class="danger"><b></b></span>
 
