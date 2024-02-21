@@ -411,6 +411,28 @@ dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果
 8 print(k,v)
 ```
 
+## python变量
+值类型 **(不可变)：int，str，tuple，**即便是str[0]='aa' 这种对字符串的操作也不能改变字符串str原来的值。
+<span class="asso"><b>JS:'string'[0]=1 无效</b></span>
+
+引用类型**（可变）：list，set，dict** 引用类型的成员的值可以改变。`[1,2][0]='a'`
+<span class="danger">id(var) 可以显示一个变量在内存中的地址</span>
+
+
+tuple类型不能修改成员，也不能追加成员。tuple的使用场景主要是描述保持不变的数组类型的数据。
+但在**tuple**类型中，**嵌入了可变数据类型**的成员，则这个**可变类型的成员是可以被修改的**
+```python
+1 a = (1,2,3,[1,2,4])
+2 a[3][2]='4'
+3 #返回(1,2,3,[1,2,'4'])
+4 a[3].append('d')
+5 #返回(1,2,3,[1,2,'4','d'])
+```
+user_account = <span class="danger"><b>input()</b></span> 命令行输入时，使用input()函数
+
+python中没有常量概念，**只有形式上的常量，变量名使用大写**，python文件的顶部，一般有一段注,用来说明该文件模块的内容。
+
+
 ## 运算符
 算术运算符： +， - ，*，/，**， //, %
 赋值运算符： +=，-=， *=， /=， %=， **=，//=
@@ -476,37 +498,137 @@ dis = {'a':1,'b':2}
 print(1 **in** lst) #返回true
 print('c' **in** dis) #返回false
 
+##### 身份运算符
+a=[1,2,3,4,5]
+b=a
+c=[1,2,3,4,5]
+a is b # True
+a is c # False
+a is not c # True
 
 
 
+## python流程控制语句
+python编码规范：
+行末尾不强制加分号结尾。不需要用{}包裹代码块，python使用缩进表示代码块
+### 1. 条件控制语句 if-else
+<span class="danger">pass</span> 语句在python中用来作占位，使语句能顺利执行下去不出错
+```python
+1 if condition_test:
+2   pass
+3 elif condition_test2:
+4   pass
+5 else:
+6   pass
+```
+<span class="asso"><b>JS:if () {} else if () {} else {}</b></span>
+### 2. 循环while else
+```python
+1 while condition:
+2   pass1
+3 else:
+4   pass2 #else是condition条件为false时执行的代码块
 
+1 count =1
+2 while count <=10:
+3   count +=1
+4   print(count)
+5 else:
+6   print('EOF')
+```
+while循环的使用场景是，设定condition为条件判断，condition条件为true时就一直执行语句块，条件判断为<span class="danger">false</span>时就执行<span class="danger">else</span>后面的语句块。while多用在递归的场景中。
 
+<span class="asso"><b>while(){}, do{} while</b></span>
 
+### 3. 循环for else
+for 循环用来遍历/循环 序列、集合、字典
 
+for **target_list in expression_list**:
+    pass1
+else:
+    pass2
+<span class="danger">else</span> 语句块在for循环<span class="danger">正常结束</span>（**非break终止**）后执行
+```python
+1 a = [['a','b','c'],(1,2,3)]
+2 for i in a:
+3   print(i,end='--')
+4   for y in i:
+5       print(y,end="|")
+6 else:
+7   print('EOF iterate done')
+```
+print(a,<span class="danger"><b>end = '|'</b></span>)
+print函数使用<span class="danger"><b>end参数</b></span>可以将需要打印的元素横向间隔排列。
 
+### 4.循环控制 终止循环 使用break, continue
+break 终止循环跳出整个循环，continue 跳过本次循环但会继续执行下一次循环。<span class="danger"><b>break</b></span>会<span class="danger"><b>中断</b></span>for循环遍历，使for循环结束后的else不执行，但<span class="danger"><b>在循环嵌套的场景下，break只会中断所在层级的循环</b></span>，<span class="danger"><b>对外层循环不会中断</b></span>
+```python
+1 a = [1,2,3]
+2 for x in a:
+3   if (x == 2):
+4       break
+5   print(x, end='|')
+6 else:
+7   print('EOF')
+8 # x==2时终止循环，整个过程只会打印出1|, break语句终止循环后
+```
 
+```python
+1 a = [1,2,3]
+2 for x in a:
+3   if (x == 2):
+4       continue
+5   print(x, end='|')
+6 else:
+7   print('EOF')
+# x==2时跳过本次循环，整个过程会打印出1|3|EOF
+```
 
+#### for循环的范围限定使用range()函数
+<span class="asso"><b>JS for 循环：</b></span>
+```js
+1 // js文件
+2 let a = [1,2,3,4,5,6,7,8,9,10]
+3   for (let i =0;i <= a.length; i ++) {
+4       console.log(i+'|')
+5 }
+```
 
+```python
+# python文件
+1 for i in (range(0,10)):
+2   print(i)
+3 # 打印出0,1,2,3,4,5,6,7,8,9 共10个数字
 
+1 for i in (range(0,10,2)):
+2   print(i)
+3 #打印出0，2，4，6，8 共5个数字，range()函数的第三个参数表示步长
+```
 
+#### range列表和生成器
+**range(num1, num2, length)**
+range范围num1是起始数值，num2是终止数值但不包含num2，length是步长，步长可以为负数表示递减。
+<span class="danger"><b>range生成一个整数区间,不包含末尾一位，</b></span>类型为`<class range>`， <span class="danger"><b>range不是一个列表但可以使用索引访问值，使用括号表示range，逗号表示范围,</b></span> **第三个参数代表步长**。使用 **list()** 函数可以生成由 **range** 指定区间范围的 **列表** ，使用 **tuple()** 可以生成指定范围**元组**，使用 **set()** 可以生成指定范围 **集合**
+```python
+1 for x in range(10,2,-2):
+2   print(x)
+3 #结果打印出10，8，6，4
 
+x = range(0,5)
+y = tuple(x) #转成元组
+y
+(0, 1, 2, 3, 4)
 
+y1 = list(x) #转成列表
+y1
+[0, 1, 2, 3, 4]
 
+y2 = set(x) #转成集合
+y2
+{0, 1, 2, 3, 4}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<span class="danger"><b></b></span>
 
 
 
