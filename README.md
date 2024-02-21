@@ -630,30 +630,156 @@ y2
 
 
 
-<span class="danger"><b></b></span>
+## python 工程组织结构
+### 包、模块、类
+python项目的组织结构，最顶级的层级<b class="danger">包</b>层级（类似文件夹），然后是<b class="danger">模块</b>层级（类似文件）、最后是写在模块文件中的<b class="danger">类</b>。**包的文件夹结构是可以嵌套的** 
+
+<b class="danger">  \_\_init__.py 是一个包被导入的时候自动执行的文件，当导入包，或者导入包下面某个模块的某个变量时 \_\_init__.py 文件也会自动执行。</b> 包和包中某个模块中的某个变量被导入时都会自动执行\_\_init__.py
+
+文件夹下如果有 <b class="danger">\_\_init__.py</b> 文件，则代表该 <b class="danger">文件夹是一个包</b> ,如果一个文件夹下**没有\_\_init__.py**则python认为该文件夹是**普通文件夹**。
+
+**\_\_init__.py**本质上就是一个模块文件，\_\_init__.py文件可以写代码，<b class="danger">也可以不写只是用来标注一个包。</b>
+
+<b class="danger">\_\_init__.py模块的名称就是包的名称，</b>比如**seven**目录下有__init__.py，则__init__.py**模块的名称就是seven**。
+
+一个 .py 文件可以称为模块，包含了 \_\_init__.py 文件的称为包。
+
+**\_\_init__.py 常用来执行模块导入时的初始化动作，比如用来收敛包（文件夹）下各模块公用的类库/模块**
 
 
+不同包下同名的模块，使用**命名空间**来区分
+```python
+1 seven.c4
+2 six.c4 
+3 #seven,six 是包名称，c4是模块名称
+```
+
+#### 导入模块的方法
+##### import
+```python
+1 import module_name # 导入同级目录下的某个模块
+2 import a1.module_name #导入同级目录下a1目录下面的module_name模块
+3 import t.b.c7 as m #导入t/b下的c7模块，并使用m表示，调用c7模块时使用m.a调用
+```
+
+**python的导入无法像js语言一样导入js模块的某个变量或函数**，<b class="danger">python只能导入整个模块文件，然后使用命名空间来访问模块下的某个变量。</b>
+```js
+1 // js文件
+2 // require
+3 const module = require('module')
+
+// exports 
+5 export.fs = fs 
+6 module.exports = fs
+
+8 // import
+9 import fs from 'fs';
+10 import {  fs as newFs } from 'fs'; // ES6语法, 将fs重命名为newFs, 命名冲突时常用import { a as b}
+11 import fs, { part } from fs; //表示从文件系统模块中导入默认导出和名为part的具名导出。
+
+12 // export 
+13 export default fs;
+14 export const fs;
+15 export function part;
+16 export { part1, part2 };
+17 export * from 'fs'; //将模块 'fs' 中的所有导出内容重新导出到当前模块
+
+```
+
+#### from import 
+导入某个包/模块下的局部变量或局部函数
+from t.c7 import a  导入**t.c7**模块下的**a**变量，调用a变量时可直接使用 **.方法** 调用
+from t import c7# 导入t模块下的c7模块，调用a变量时使用**c7.a**调用
+from t.c7 import a, b, c #导入t.c7模块下的a,b,c三个变量
+from t.c7 import (a, b
+c) 导入t.c7模块下的a,b,c三个变量,c变量可以在括号内换行,需要导入多个变量（换行）时，使用**括号**包裹
+from t.c7 import * 导入t模块下c7模块下的所有变量
+
+<b class="danger">import方法导入的是模块，from import 导入的可以是某个变量也可以是某个模块</b>
+
+#### \_\_init__.py 文件定义导入文件
+导入一个包时,\_\_init__.py文件会自动执行，使用\_\_init__.py文件导入变量使用场景
+在**包t**下的\_\_init__.py模块文件中编写需要多次重复导入的模块，比如
+```python
+1 #__init__.py文件
+2 import sys
+3 import datetime
+4 import io
+```
+
+在其他目标文件中直接导入包t即可导入包t下\_\_init__.py模块文件中所导入的变量/库
+```python
+1 import t
+2 print(t.sys)
+```
+#### 导入模块注意事项
+1. 包和模块**不会被重复导入**，**多次**引用同一个包或模块，但其导入过程**只会执行一次**。
+2. 当导入某个模块时，该模块文件中的代码会**自动执行一次**。
+3. 避免循环导入
+4. **如果一个.py文件被当作python执行的入口文件，这个.py文件的顶级不会有package包，即便当前.py文件同级路径存在\_\_init__.py也不会打印出\_\_package__**，即如果python直接执行这个.py文件时，这个.py文件中的\_\_package__为NoneType。**如果一个.py文件被当作模块导入后，这个.py文件中的\_\_package__会指向其命名空间路径**。
+5. **如果需要将某个c15.py入口文件当作模块调用可以使用`python -m seven.c15` 明确c15.py的顶级包seven，并使用-m的方式调用，此时c15.py文件的\_\_package__就不为NoneType**
+
+#### 相对导入、绝对导入
+import package2.package4.m2 #绝对路径导入，根据文件路径导入某个模块
+
+from .m3 import m #相对路径导入，导入相对于当前路径下的m3模块
+
+from ..m4 import m #相对路径导入，导入相对于当前路径，上一级目录下的m4模块
+
+注意，<b class="danger">使用相对路径导入时，不能超过当前模块的顶级包路径，否则出现以下错误</b>
+**attempted relative import beyond top-level package**
+
+<b class="danger">在python项目的入口文件中，不能使用相对路径导入模块，只能使用绝对路径导入。或者使用相对路径导入，但将入口文件当成模块调用(加-m参数)</b> 
+`python -m pkgName.moduleName` *明确入口文件的顶级包*
+
+<b class="danger">绝对引入，要从顶级包开始写 top.ab.cd</b>, **顶级包的位置是相对于python执行入口.py文件的位置来确定的**
 
 
-__init__.py 批量导入，导入单个模块时会运行，模块中__all__的作用
+*添加绝对路径后再导入包*
+```python
+1 import sys
+2 sys.path.append('c:\\users\\desktop') #添加一个绝对路径
+3 import packageName1 #添加绝对路径后可以直接导入绝对路径下的包
+4 packageName.fn1('hello world')
 
+```
 
+### 模块的内置变量
+python c15.py #python 将c15.py <b class="danger">当作程序入口</b> 文件直接执行 
+python <b class="danger">-m</b> seven.c15 #python 将seven目录下的c15.py文件 <b class="danger">当作模块调用</b> （.py文件当作模块调用时必须有包的环境(加<b class="danger">.</b> )，**seven**目录这时候就是包），这种方式不同于python seven\c15.py#仍然是当入口文件调用
 
+**main.py入口文件不是顶级包，只是入口文件**
 
+`info=dir()`
+`print(info)`
+<b class="danger">dir()函数</b> 
+如果没有**提供参数**，dir()函数将返回**当前作用域内的有效属性列表**。如果**提供了参数**，dir()函数将返回该**参数对象的有效属性列表**。dir()函数通常用于查看对象的属性，以便在编程时了解可以对对象进行哪些操作。
 
+**带双下划线的是python的内置变量**
+\_\_annotations__
+\_\_builtins__
+\_\_cached__
+<b class="danger">\_\_doc__</b> 当前模块的注释信息
+<b class="danger">\_\_file__</b>当前模块文件相对于**执行入口文件所在目录的**文件路径
+\_\_loader__ 引用了本模块的加载器对象，即该模块的上下文是由这个加载器加载到内存中的
+<b class="danger">\_\_name__</b> 当前模块的完整名称，包含了命名空间，比如t.c9
+<b class="danger">\_\_package__</b>  当前模块 <b class="danger">所在的包</b> 名称比如t，**相对于执行入口文件所在的目录**
+\_\_spec__
+**\_\_init__.py** python检测到一个目录下存在\_\_init__.py文件时，python就会把它当成一个模块
+\_\_all__ 在某个模块文件中指定可以被导出的变量，或在\_\_init__中指定可以被导出的模块
+**\_\_closure__[0].cell_contents #查看对象的闭包变量**
 
+当一个模块是程序的**入口文件**时即执行**python abc.py**时，该模块文件的 **\_\_name__** 会显示为 <b class="danger">\_\_main__</b>  ，**\_\_file__**文件路径会显示为**当前模块的文件名**（没有路径）
 
-
-
-
-
-
-
-
-
-
-
-
+<b class="danger">\_\_name__的经典应用</b>
+`make a script both importable and executable` 让一个脚本既可被当作模块导入，也可被解析执行
+```python
+1 #t1.py文件
+2 if __name__ == '__main__':
+3   pass1
+4 pass2
+```
+当t1.py作为 <b class="danger">程序入口</b> 直接 <b class="danger">执行</b> 的时候会执行**pass1**, 当t1.py <b class="danger">被其他模块导入时</b> t1.py只会执行**pass2**，不执行pass1
 
 
 
