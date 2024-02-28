@@ -67,8 +67,8 @@ Learn-Python
 ```
 <b class="danger">单斜杠</b> 除法自动转换结果为<b class="danger">浮点数</b>，<b class="danger">双斜杠</b>除法是整除<b class="danger">不考虑余数</b>
 
-<span class="asso"><b>JS: Math.floor()  ,Math.ceil()   ,Math.round()   ,ParsrInt()</b></span>
-<b class="asso">JS: typeof(134) </b>
+<span class="asso"><b>ES: Math.floor()  ,Math.ceil()   ,Math.round()   ,ParsrInt()</b></span>
+<b class="asso">ES: typeof(134) </b>
 
 
 ### 2. 进制转换 10，2，8，16进制
@@ -95,12 +95,12 @@ int(123) // 123
 hex() 转换成16进制方法
 oct() 转换成8进制方法
 float() 转成浮点数
-js:parseInt('123'), parseFloat('123.2')
+<b class="asso">ES:parseInt('123'), parseFloat('123.2')</b> 
 
 
 ### 3. bool 布尔类型
 <b class="asso">
-JS: Boolean()
+ES: Boolean()
 </b>
 
 ```python
@@ -123,9 +123,11 @@ bool(None) #False
 ```
 
 <b class="asso">
-js:Boolean('123')
-js:true,flase python:True,False
-js数组，python列表；js:对象，python元组
+ES:Boolean('123') python: bool('123')
+
+ES:true,flase python:True,False
+ES数组，python列表
+ES:对象，python元组
 </b>
 
 ### 4. str 字符串类型
@@ -155,7 +157,7 @@ print函数加转义字符实际也会显示成两行 hello world<b class="dange
 `'hello world'[6: ]`   <b class="danger"> [6: ]</b> 从第6位截取到末尾，返回world。省略即开始或末尾
 `'hello world'[:-4]`  <b class="danger"> [:-4]</b> 从0位开始**往后截取**到负4位，返回'hello w'。省略即开始或末尾
 `'hello world'[-4:]`  从倒数第4位开始**往后截取**，返回'orld'
-<b class="asso">JS:substring(0,4)</b>
+<b class="asso">ES:substring(0,4)</b>
 **python中字符串也是有序数据类型**
 **string是不可变的序列，常用操作方法:**
 
@@ -255,7 +257,7 @@ unicode字符串 `print(u'你好，python')`
 
 ### 5. list列表类型  python中的有序数据类型
 <b class="asso">
-JS: Array
+ES: Array
 </b>
 
 List:`[1,2,2,1,'hello','abc',12.5, [2,3,22]]`
@@ -266,7 +268,7 @@ List[0] 返回列表的第0个元素
 如果索引号是单个数字则返回结果是List成员的字符串
 如果索引号是一个区间值List<b class="danger">[0:4]</b>返回列表的第0到第4个元素(不含第4个)组成的<b class="danger">新列表</b>
 
-#### 连接两个列表 <b class="asso">JS: concat方法</b>
+#### 连接两个列表 <b class="asso">ES: concat方法</b>
 `[1,2,3,4] + ['a','a1','aa'] #返回 [1,2,3,4,'a','a1','aa'] `
  
 
@@ -319,7 +321,7 @@ Tuple: `(1,2,3,4,'hello')` 元组是<b class="danger">不可变的List</b>,即�
 【2】连接[1]+[2]
 【3】判断元素是否**在序列内** 
 2 **in** [1,2,3] 返回True 
-<b class="asso">JS: [1,2,3].includes(2)</b>
+<b class="asso">ES: [1,2,3].includes(2)</b>
 
 判断是否**不在序列内** 
 2 **not in** [1,2,3] 返回False
@@ -360,7 +362,7 @@ Tuple: `(1,2,3,4,'hello')` 元组是<b class="danger">不可变的List</b>,即�
 ### 7. set集合类型 python中的无序数据类型
 ![集合](./img/set_python.jpg)
 集合是<b class="danger">无序的</b>数据类型，无法通过下标序列号获取元素。集合的元素是<b class="danger">没有重复的</b>set适用于需要**存储一组唯一元素**并进行**集合**运算的场景
-<b class="asso">JS:js中的set()无重复，但js中的set是有序的。</b>
+<b class="asso">ES:js中的set()无重复，但js中的set是有序的。</b>
 set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
 获取集合的长度 **len(**{1,2,3}**)**
 判断是否在集合内 1 **in** {1,2,3}
@@ -379,7 +381,7 @@ set: {1,2,3,4,'123',True}，定义空的集合 type(**set()**)
 
 ### 8. dict字典类型 python中的无序数据类型
 dict: { 'a':100, 'b':'hello' } dict是**无序列表** dict适用于需要通过**唯一的键**来查找、存储和操作值的场景，例如存储联系人的姓名和电话号码。
-<b class="asso">JS:js中的Object对象</b>
+<b class="asso">ES:js中的Object对象</b>
 字典中不能有重复的key，存在重复的key时，后添加的key会替代先添加的key。
 字典的键key可以是字符串也可以是数值,{**1**:'a',**'1'**:'b'} ，这里**两个key1是不同的key**
 字典的**key 必须是不可变的类型**，比如int, str,tuple，list可变所以不能作为key
@@ -413,7 +415,7 @@ dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果
 
 ## python变量
 值类型 **(不可变)：int，str，tuple，**即便是str[0]='aa' 这种对字符串的操作也不能改变字符串str原来的值。
-<b class="asso">JS:'string'[0]=1 无效</b>
+<b class="asso">ES:'string'[0]=1 无效</b>
 
 引用类型**（可变）：list，set，dict** 引用类型的成员的值可以改变。`[1,2][0]='a'`
 <b class="danger">id(var) 可以显示一个变量在内存中的地址</b>
@@ -437,9 +439,9 @@ python中没有常量概念，**只有形式上的常量，变量名使用大写
 算术运算符： `+， - ，*，/，**， //, %`
 赋值运算符： `+=，-=， *=， /=， %=， **=，//=`
 比较运算符：`==，!=， >=， <=， >， <`
-逻辑运算符：`and， or，not  `<b class="asso"> JS: &&, ||, !</b>
-成员运算符： `in，not in `<b class="asso"> JS: 没有not in 只有in</b>
-身份运算符：`is，is not` <b class="asso"> JS: Object.is(param1, param2) 判断两个值是否完全相等即==) </b>
+逻辑运算符：`and， or，not  `<b class="asso"> ES: &&, ||, !</b>
+成员运算符： `in，not in `<b class="asso"> ES: 没有not in 只有in</b>
+身份运算符：`is，is not` <b class="asso"> ES: Object.is(param1, param2) 判断两个值是否完全相等即==) </b>
 位运算符：&， |， ^，>>，<<，~ （<b class="danger">按位</b> &,|,^,>>,<<,~）
 python中没有a ++, a-- 这种自增自减运算符
 
@@ -454,7 +456,7 @@ python中没有a ++, a-- 这种自增自减运算符
 
 str类型中，**空字符串**''会被转换成False，注意不是' '(**里面有空格不是空字符串**)
 
-list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <b class="asso">JS:这里不同于js中的空数组，js空数据会被转换成true</b>
+list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <b class="asso">ES:这里不同于js中的空数组，js空数据会被转换成true</b>
 
 
 身份运算符:**is, not is**, 判断的是两个变量的<b class="danger">值和值的值内存地址</b>是否相同
@@ -466,7 +468,7 @@ python中判断一个变量是否是某个类型的实例，使用
 <b class="danger">isinstance： isinstance('a', str) #判断'a'是否是str类型</b>
 <b class="danger">isinstance: isinstance(param1,(str, tuple, set)) #判断param1是否是str,tuple,set中的任意一种</b>
 
-<span class="asso"><b>JS:判断对象是否是某个构造函数（类）的实例，str instanceof String // 这里str 必须是str = new String('a')的结果，这样才是String函数生成的实例。
+<span class="asso"><b>ES:判断对象是否是某个构造函数（类）的实例，str instanceof String // 这里str 必须是str = new String('a')的结果，这样才是String函数生成的实例。
 </b></span>
 
 
@@ -521,7 +523,7 @@ python编码规范：
 5 else:
 6   pass
 ```
-<b class="asso">JS:if () {} else if () {} else {}</b>
+<b class="asso">ES:if () {} else if () {} else {}</b>
 ### 2. 循环while else
 ```python
 1 while condition:
@@ -538,7 +540,7 @@ python编码规范：
 ```
 while循环的使用场景是，设定condition为条件判断，condition条件为true时就一直执行语句块，条件判断为<b class="danger">false</b>时就执行<b class="danger">else</b>后面的语句块。while多用在递归的场景中。
 
-<b class="asso">while(){}, do{} while</b>
+<b class="asso">ES: while(){}, do{} while</b>
 
 ### 3. 循环for else
 for 循环用来遍历/循环 序列、集合、字典
@@ -560,7 +562,16 @@ else:
 print(a,<b class="danger">end = '|'</b>)
 print函数使用<b class="danger">end参数</b>可以将需要打印的元素横向间隔排列。
 
-### 4.循环控制 终止循环 使用break, continue
+### 4.循环-列表推导式
+
+new_list = **[** expression for item in iterable **if** condition **]**
+```python 
+list1 = [1,2,-3,5,6,9,-10]
+new_list = [item * 2 for item in list1 if item>0]
+print(new_list)
+```
+
+### 5.循环控制 终止循环 使用break, continue
 break 终止循环跳出整个循环，continue 跳过本次循环但会继续执行下一次循环。<b class="danger">break</b>会<b class="danger">中断</b>for循环遍历，使for循环结束后的else不执行，但<b class="danger">在循环嵌套的场景下，break只会中断所在层级的循环</b>，<b class="danger">对外层循环不会中断</b>
 ```python
 1 a = [1,2,3]
@@ -585,7 +596,7 @@ break 终止循环跳出整个循环，continue 跳过本次循环但会继续�
 ```
 
 #### for循环的范围限定使用range()函数
-<b class="asso">JS for 循环：</b>
+<b class="asso">ES for 循环：</b>
 ```js
 1 // js文件
 2 let a = [1,2,3,4,5,6,7,8,9,10]
@@ -784,37 +795,218 @@ python <b class="danger">-m</b> seven.c15 #python 将seven目录下的c15.py文�
 
 
 ## 函数
+定义函数
+```python 
+def fn(param1, param2 = 'abc'):  #param2是函数参数默认值
+    pass
+    return val1
+```
+
+#### 函数的多个返回值
+```python 
+def damage(sk1,sk2):
+    val1 = sk1 * 2
+    val2 = sk2 * 2
+    return val1,val2 
+
+resule1, resule2 = damage(2,3)
+```
+**返回多个值**，使用**逗号分隔开**，逗号分隔开的返回值其**类型是元组tuple**
+**获取**函数的**多个返回值**的时候，用逗号分隔声明变量**解构赋值**方法，**接收结果**的变量和函数内部**返回值的先后顺序**有关
+
+#### 声明多个变量
+```python 
+a,b,c=1,2,3 #a=1, b=2, c=3
+a,b,c=[1,2,3] #a=1, b=2, c=3
+a,b,c=(1,2,3) #a=1, b=2, c=3
+a = 1,2,3 #a=(1,2,3)
+```
+`a,b,c=1,2,3` 
+`a,b,c = d` d是序列类型时（**tuple,list**），此时a,b,c会序列解包
+`a = 1, 2, 3` #a赋值后是tuple类型
+<b class="asso">ES: let a=1,b=2,c=3 或者 let {a,b,c} = {a:1,b:2,c:3}</b>
+
+##### 链式赋值
+`a=b=c=1` a=1,b=1,c=1
+<b class="asso"> let a=b=c=1</b>
+
+#### 函数参数
+##### 1. 必须参数
+```python 
+def fn(x,y):
+    return x+y
+```
+调用时传入的实际参数必须和形式参数个数一致且顺序一致
+
+##### 2. 关键字参数
+```python 
+def fn(x,y):
+    return x+y
+```
+调用时传入的参数不用考虑顺序，只需要参数名和形式参数一致即可`fn(x=1,y=2)`
+<b class="asso">ES:通过解构赋值实现调用函数时不考虑参数传入顺序</b>
+```js
+function fn({x,y}){
+    return x+y
+}
+fn({y:2,x:1}) //不考虑参数传入的顺序
+```
+
+##### 3. 默认参数
+```python 
+def fn(x,y=2):
+    print(f"x is {x},y is {y}")
+```
+调用时`fn(1) #x1,y2`
+调用时`fn(3,4) #x3,y4`
+python语法要求，python中有 <b class="danger">默认值的参数</b>要放<b class="danger">末尾</b> ，声明函数时，**必须参数靠前**，有默认值的**默认参数尽量放后面**。
 
 
-...rest
+##### 4. 可变参数
+```python 
+def fn(*param):
+    print(param)
+```
+调用时 fn(1,2,3,4,5), 打印param时(1,2,3,4,5)会自动将参数列表转换成**tuple**，函数内部定义的可变参数param会 <b class="danger">自动收敛传入参数，并转成tuple</b> 
+```python 
+def fn(x,y,z):
+    print(f"x is {x},y is {y}, z is {z}")
+```
+<b class="danger">fn(\*(1,2,3))</b>
+调用时 fn(*(1,2,3))使用\*调用将传入的参数tuple平铺**逐一匹配**到函数内部的**形式参数**位置
 
-*param   函数内遍历使用
-**param 函数调用fn(x=1,y=2,z=5),函数内遍历访问传入的参数，dict.items(). 将字典参数传入fn(\*\*param)中，让\*\*param可以被解构，\*\*{dict}
+<b class="asso">ES: 参数收敛</b>
+```js
+function fn1(...param){
+    console.log(param)
+    // 调用fn1(1,2,3,4)时，param被收敛为[1,2,3,4]
+}
+
+function fn2(x,y,z) {
+    console.log(x, y, z)
+}
+//调用fn2(...[3,4,5])时，...[3,4,5]被平铺到函数中的形式参数位置
+```
+
+##### 5. 关键字可变参数
+收敛传入的关键字参数，基于字典的可变参数，传入参数转成dict格式
+```python 
+def fn(**param)
+    print(param)
+```
+<b class="danger">将传入的参数收敛为dict</b> 
+调用时`fn(x=1,y=2,z=3)`,param为{'x':1,'y':2,'z':3}
+
+```python 
+def fn(x,y,z):
+    print(f'x is {x},y is {y},z is {z}')
+```
+调用时`fn(**{'y':3,'z':2,'x':4})` 不用强调传入参数的顺序x4,y3,z2
 
 
 
 
+## 变量作用域
+#### 函数的局部变量和全局变量
+局部变量只能在其被声明的函数内部访问，而全局变量可以在整个全局上下文环境访问。
+**某个模块中函数内部global关键字定义的全局变量也是可以被其他模块导入使用的**
+<b class="danger">函数内声明全局变量</b> 
+```python 
+def fn():
+    global a
+    a  = 'default'
+
+fn() #fn函数执行后创建了一个全局变量a
+```
+#### 作用域
+函数内部定义的变量（局部变量）作用域在函数内部，函数外部无法引用函数内部变量（闭包除外，还可以使用global关键字变量在函数内部定义全局变量）。但函数内部可以引用全局变量即函数外部定义的变量，或者嵌套函数，其内部变量可以引用外层变量。
+```python 
+c=10
+def fn():
+    print(c) #打印出10
+```
+注意：python只有**全局作用域**、**函数作用域**的概念，python**没有代码块级的块作用域**。在python中，**for循环，while循环，if..else等非函数不能形成独立的块作用域**。所以python for循环中声明的变量，**在for循环外部**是**可以访问**的。<b class="danger">不同于JS，有块级作用域。</b> 
 
 
 
+## 面向对象
+类：用class定义，类变量 <b class="danger">首字母大写，驼峰命名法</b>，类的最基本作用是用来封装代码。类中定义的函数即方法。类就是对现实世界的抽象定义。
+```python 
+class Student():
+    sum = 0
+    age = 0
+    #构造函数，初始化实例，self指向实例对象
+    def __init__(self,name,age):
+        self.name = name
+        self.age = age
+    def fn(self):
+        print(self.name,self.age)
 
+# 实例化stu1
+stu1 = Student('json',18)
+# 调用实例的方法
+stu1.fn()
+```
+在定义类class的实例的**构造函数**和**方法**时， <b class="danger">必须显式的传入第一个参数self</b>
 
+#### 导入类
+```python 
+from c1 import Student()
+stu2 = Student('penny',18)
+stu2.fn()
+```
+#### 类和对象的关系
+**类**是现实世界或思维世界中的实体在**计算机中的一种抽象反映**，将抽象出的实体，其 <b class="danger">属性</b>和对属性的操作即<b class="danger">方法</b> 封装在一起。简单理解，类抽象出**实体的特征与行为**，类基本可以理解为模板对象，即通过类**实例化**出的一个**实例**。
+```python 
+class Studen():
+    name= 'default value'
+    age= 0
+    def __init__(self, name, age): #python类的构造函数
+        self.name=name #通过构造函数的执行来初始化对象的属性
+        self.age=age #通过构造函数的执行来初始化对象的属性
+```
+**实例化**一个实例时，类的**构造函数会自动执行**。构造函数或实例方法内的**self**始终**指向实例**。
+<b class="asso">ES:类的定义方法
+</b>
+```js
+class Student{
+    constuctor(name,age) { //构造函数
+        this.name=name
+        this.age=age
+    }
+    fn() { //实例方法
+        console.log(this.name) //this指向实例对象
+    }
+    static fnStatic() { //类class的静态方法
+        console.log(this) //静态方法中this指向的是类而不是实例
+    }
+    static valStatic = 'default' //类的静态属性
+}
+```
 
+#### 类变量、实例变量
+类变量即类自身的**静态属性**，类变量要**和类关联在一起**，**体现出类的意义**。
+实例变量即类**实例化后的属性**，实例化后生成对象的属性。实例变量和对象关联在一起
+```python 
+ class Student():
+    sum=0 #类的变量，与类相关联，JS类的变量用static静态属性表示
+    def __init__(self, name, age): #self只是占位符，可以用this替代
+        self.name=name #实例变量
+        self.age=age #实例变量
+    def fn1(self): # 定义函数的时候参数传入self，表示该函数是实例的方法
+        print(self.name)
+```
 
+#### 类与对象的变量查找顺序
+`stu1 = Student()`
 
+stu1<b class="danger">.\_\_dict\_\_ </b> **对象（包含类或者实例）的__dict__对象中保存了当前对象的所有变量**
+注意：类的静态属性（类变量）和实例属性（实例变量）的查找顺序，如果查找一个实例的变量，首先在实例属性中查找，如果找不到就去类的静态属性中查找，如果类中找不到就会去类的父类中中查找。
+<b class="asso">ES:JS的原型对象</b>
 
-
-
-
-
-
-
-
-
-
-
-
-
+##### 在实例方法中访问实例变量与类变量
+实例方法中访问实例变量，<b class="danger">self.val</b> 
+实例方法中访问类变量：<b class="danger">ClassName.val</b>  或者 <b class="danger">self.\_\_class\_\_.val</b> 
 
 
 
