@@ -993,8 +993,11 @@ class Student{
     def __init__(self, name, age): #self只是占位符，可以用this替代
         self.name=name #实例变量
         self.age=age #实例变量
+        self.__class__.sum += 1 #构造函数中访问类的属性
     def fn1(self): # 定义函数的时候参数传入self，表示该函数是实例的方法
-        print(self.name)
+        print(self.name) #访问实例的属性
+        print(self.__class__.sum) #访问类的属性
+        print(Student.sum) #访问类的属性
 ```
 
 #### 类与对象的变量查找顺序
@@ -1008,6 +1011,32 @@ stu1<b class="danger">.\_\_dict\_\_ </b> **对象（包含类或者实例）的_
 实例方法中访问实例变量，<b class="danger">self.val</b> 
 实例方法中访问类变量：<b class="danger">ClassName.val</b>  或者 <b class="danger">self.\_\_class\_\_.val</b> 
 
+
+#### 类方法 即类的静态方法
+```python 
+class Student():
+    name=''
+    sum=0
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def fn(self):
+        print(self.name)
+        print(Student.name)
+        print(self.__class__.name)
+
+    @classmethod #装饰器，定义类的方法，即类的静态方法
+    def fn2(cls):
+        cls.sum += 1 #访问类的属性
+```
+
+`@classmethod` 定义类的静态方法时增加 **@classmethod装饰器** 
+显式的传入第一个参数cls,传入的参数 **cls** 表示 **class** ，可以使用其他变量代替。
+类的方法中访问类的属性，访问类的属性cls.val，和实例方法中 <b class="danger">self.\_\_class\_\_.val</b> 等价，等价于 <b class="danger">ClassName.val</b>。
+调用类的方法：ClassName.fn2()
+通过类的实例调用类的方法(不建议这么调用没意义):
+`ins1 = ClassName()`
+`ins1.__class__.fn2()`
 
 
 
