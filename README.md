@@ -1039,14 +1039,63 @@ class Student():
 `ins1.__class__.fn2()`
 
 
+#### 成员可见性
+对类的变量即类的静态属性的操作，放到类的静态方法中，或者实例方法中去操作。不建议在外部直接操作类的属性比如 `ClassName.val = 1`  这种操作不建议。**成员的可见性即设置私有方法或私有属性，不允许从外部访问或修改，体现封装性**。
+
+**类的私有方法** 在一个类中定义的方法(类方法或者实例方法)名称前面加<b class="danger">\_\_</b>表示该方法为类的私有方法，私有方法在类的外部无法调用，比如`ClassName._fn()`
+
+**私有变量** 在变量名前加<b class="danger">\_\_</b>该变量就成为私有变量，私有变量只能在对象内部访问，无法在外部访问，比如`obj.a`
+```python 
+class Student():
+    __abc = 'private val' #声明私有变量
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def fn(self):
+        print(self.name)
+        self.__privateMethod() #Student类的内部访问私有方法
+    def __privateMethod(self): #声明私有方法
+        self.__abc = 'modify private val' #操作私有变量
+        print(self.__abc)
+
+stu1 = Student('a',18) #实例化stu1
+```
+**注意：**
+以上代码中直接访问`Student.__abc` 或者 `Student.__privateMethod`会提示错误，无法直接通过类访问类的私有属性和方法。但可以通过hack方法变通访问`Student._Student__abc`或者`Student._Student__privateMethod`
+
+以上代码中访问直接访问`stu1.__abc` 或者 `stu1.__privateMethod`会提示错误，无法直接通过实例访问实例的私有属性和方法。但可以通过hack方法变通访问`stu1.__class__._Student__abc`或`stu1.__class__._Student__privateMethod`
+或`stu1._Student__abc`或`stu1._Student__privateMethod`
+
+python中类的构造函数中定义私有属性后，可通过 **\_\_dict\_\_** 查看实例的所有变量，可以发现私有属性被改名为 **\_ClassName\_\_privateVar** ,即在 **\_类** 名后面加私有属性.
+
+python中虽然有私有变量概念，但私有变量还是可以通过hack方法访问的，通过__dict__可以知道python的私有变量只不过通过改名实现的，所以通过instance._ClassName__privateVar 可以访问到私有变量
+
+`obj._val = 1` 这种看似在外部修改了名称为_val的私有变量，实则是由于**python有动态语言**的特性，在obj对象上增加了一个名称为_val的变量并设置值为1。所以，python中不能动态的添加一个私有属性。python中的私有属性和方法都被自动添加了 **\_ClassName** 前缀。
 
 
+## 面向对象 继承
+继承，避免重复定义方法和变量。`Student(Human)`此时Student子类生成的实例，可以访问父类Human上定义的类属性、类方法和父类的实例属性、实例方法。
 
 
+class Human():
+ sum = 0
+ def __init__(self, name, age):
+     self.name=name
+     self.age=age
+ def get_name(self):
+     print(self.name)
 
 
+class Student(Human):
+    def __init__(self,school):
+        self.school = school
+    def fn(self):
+        print(self.__class__.sum)
 
-
+stu1 = Student('a');
+print(stu1.__dict__);
+print(stu1.__class__.__dict__);
+stu1.fn()
 
 
 
