@@ -1442,6 +1442,142 @@ r = reduce(lambda x,y:x+y, list_x, 10)
 
 
 
+## 装饰器
+当需求变更之后，不可避免要修改代码，修改代码尽量遵循原则（对修改是封闭的，对扩展是开放的），不要修改函数和对象的定义，**应该通过扩展一个函数，或者扩展一个类来解决需求变更的问题**。 为一个函数增加功能，而不修改原有函数的代码,不改变原有函数的基础上，增加新的功能。
+
+开闭原则 <b class="danger">对修改是封闭的，对扩展是开放的</b>
+
+装饰器的使用场景
+1. 当需要对某一个封装的单元比如某个函数做出修改，可以在不修改原有函数的基础上使用装饰器的形式扩展原有函数的功能进而达到间接修改原有函数
+2. 需要复用某个函数的功能
+
+```python 
+import time
+
+def decorator(func):
+    def wrapper(): #定义扩展原函数的代码
+        print(time.time())
+        func()
+    return wrapper #返回扩展函数
+
+def f1():
+    print('This is a function')
+
+f = decorator(f1)
+f()
+
+#使用装饰器语法糖简化以上调用
+@decorator
+def f1():
+    print('This is a function')
+f1() #直接执行f1()函数，不用像上面代码一样改变调用函数的调用方式 f = decorator(f1) f()
+```
+
+<b class="danger">python装饰器的语法糖 @符号</b> 
+@符号语法糖，不改变原有函数，增加新功能，代码没有改变f1的内容，调用时直接调用f1()
+
+**使用装饰器语法糖后可以直接执行f1()函数，不用像上面代码一样改变函数的调用方式** 
+`f = decorator(f1)` 
+`f()`
+
+
+#### 单函数参数场景的装饰器函数
+```python 
+import time
+
+def decorator(fn):
+    def wrapper(fn_name):
+        print(time.time())
+        fn(fn_name)
+    return wrapper
+
+@decorator
+def f1(fn_name):
+    print(f'this is a function named {fn_name}')
+
+f1('test_name') #调用经过装饰的函数
+#返回以下内容
+# 1709539265.6746893
+# this is a function named test_name
+```
+
+
+#### 多个函数参数场景的装饰器函数
+```python 
+import time
+
+def decorator(fn):
+    def wrapper(*args):
+        print(time.time())
+        fn(*args)
+    return wrapper
+
+@decorator
+def f2(fn_name1,fn_name2):
+    print(f'this is a function named {fn_name1}')
+    print(f'this is a function named {fn_name2}')
+f2('test1','test2')
+
+#返回以下内容
+# 1709539505.1007066
+#this is a function named test1
+# this is a function named test2
+```
+
+#### 多个函数参数，可变关键字参数的装饰器函数
+```python 
+import time
+
+def decorator(fn):
+    def wrapper(*args,**kw):
+        print(time.time())
+        fn(*args,**kw)
+    return wrapper
+
+@decorator
+def f3(*args,**kw):
+    print(f'this is a function named {args[0]}')
+    print(f'this is a function named {args[1]}')
+    print(kw)
+
+f3('test1','test2',a=1,b=2,c=3)
+
+#返回如下
+# 1709541640.6559663
+# this is a function named test1
+# this is a function named test2
+# {'a': 1, 'b': 2, 'c': 3}
+```
+**\*args 收敛可变参数, \*\*kw收敛关键字参数**
+
+#### 装饰器的副作用
+使用装饰器后原有**函数的名称会改变为wrapper**，**函数**内的__doc__**说明文档会改变**。
+解决增加装饰器后函数名称改变的方法：
+```python 
+import time
+from functools import wraps
+def my_decorator(func):
+    @wraps(func) #包裹原函数，其他不变
+    def wrapper(*args, **kw):
+        print(time.time())
+        func(*args, **kw)
+    return wrapper
+
+@my_decorator
+def f4():
+    """this is f4 doc"""
+    print("is f4")
+
+f4() #返回内容如下
+# 1709543999.348059
+# is f4
+
+print(f4.__name__) #返回f4
+help(f4) #返回f4函数的说明文档 this is f4 doc
+```
+f4.\_\_name\_\_ 函数的名称仍然是f4,
+f4.\_\_doc\_\_ 函数的注释还是原函数的注释
+
 
 ----
 <span class="success">
