@@ -1212,23 +1212,185 @@ raise customException('这是一个自定义的异常信息')
 
 
 
+## JSON
+JSON是轻量级的数据交换格式。JSON是数据格式，常见的数据格式还有XML数据格式。字符串是JSON的表现形式，符合JSON格式的字符串就是JSON。
+
+python中JSON和 **字典** 格式一样，在 **JS中JSON和对象格式**一样，在每种语言中都有特定的数据格式与JSON对应从而实现转换。
+
+#### JSON反序列化 
+转换json格式字符串为JSON，必须是标准格式的JSON字符串`'{"name":"abc"}'`
+python JSON 转字典
+```python 
+import json
+ditc1 = json.loads(jsonStr) #将str格式的json字符串转成dict
+```
+<b class="asso">ES: JSON.parse(jsonString)</b>
+
+数组JSON对象也能被反序列化为python中的list
+`list1 = json.loads('[{"name":"a1"},{"name2":"a2"}]') `
+<b class="danger">这里一定得是字符串格式的list，且list内的每个成员是字符串的JSON格式</b> 
+
+```python 
+import json
+list1 = json.loads('[{"name":"a1"},{"name2":"a2"}]') #字符串格式list转成list
+print(list1) #返回list格式
+print(type(list1)) #list
+
+list1Str = json.dumps(list1) #将list格式转成字符串格式list
+print(list1Str) #返回字符串格式list
+print(type(list1Str)) #字符串
+
+abc = json.loads('[{"a":1,"b":2},{"c":3}]')
+print(abc) #返回list [{'a': 1, 'b': 2}, {'c': 3}]
+```
+
+<b class="asso">ES: JS中也能将字符串格式数组对象转成数组对象，JSON.parse(jsonString)</b>
+
+JSON数据类型与python数据类型
+![json_python](./img/json_python.jpg)
+
+#### JSON序列化
+将JSON数据格式转成JSON格式字符串
+```python 
+import json
+jsonStr = json.dumps(jsonObject)
+```
+<b class="asso">ES: JSON.stringify(jsonObject)</b>
+JSON：一种通用的数据交换格式，支持各种语言。在每种编程语言中都有特定的数据类型和JSON格式可以转换。
+JSON字符串：符合标准JSON语法格式的字符串
+JSON对象：只在JS语言中存在JSON对象，在python中是dict，或list dict
 
 
+## 枚举
+枚举（enum）是一种特殊的类，通过enum模块提供，主要用于定义**一组命名的常量集合**，每个枚举成员都有一个**唯一**的**名称**和**关联值**
+
+枚举其实是一个类，枚举不可实例化。**枚举就是列举出有穷集合的所有元素，枚举的成员** <b class="danger">不可修改</b> ，且枚举类型中 <b class="danger">没有重复成员名称name</b>，**但成员名称对应的值可以相同，后面相同值对应成员名称name相当**<b class="danger">于是别名</b>
+
+常规的class类、dict类型中定义的属性或变量可以被修改，且类中定义的属性存在相同值的可能，无法确认属性的唯一性。
+```python 
+class TypeDiamond():
+    yellow = 1 # 无法确认属性的唯一性
+    red = 2
+    green = 1 # 无法确认属性的唯一性
+```
+`abc = {'yellow':1,'red':2, 'green':1}`
+以上方法定义的属性或变量可被修改，且存在值相同的变量，无法区分唯一性。
+
+```python 
+from enum import Enum
+class VIP(Enum):
+    YELLOW=1
+    GREEN=2
+    abc=2 #因为枚举值相等，所以后面的abc相当于是前面GREEN的别名
+```
+`VIP.YELLOW =2` 会提示报错，因为枚举类型不能修改
+`VIP.YELLOW` VIP.YELLOW 获取的是一个枚举类型即`<enum 'VIP'>`，不是具体的值
+`VIP.YELLOW.value` 取枚举类型中标签对应的枚举
+`VIP.YELLOW.name` 获取枚举类型中枚举名称
+**abc相当于是GREEN的别名，abc的值与GREEN的值相同**
+
+#### 遍历枚举
+```python 
+for v in VIP:
+    print(v) #返回VIP类中的所有的枚举类型
+```
+**枚举的运算比较**，**枚举类型之间**只能判断**是否相等**(===)，**是否同一身份**(is)
+`VIP.YELLOW == VIP.YELLOW` 返回True
+`VIP.YELLOW == VIP.GREEN` 返回False
+`VIP.YELLOW == 1` 会返回False，不是枚举类型之间比较
+`VIP.YELLOW is VIP.GREEN` 返回True
+
+#### 枚举转换
+当一只某个值，要根据该值匹配出某个枚举类型中的成员
+```python 
+a=1
+VPI(a) #返回VIP.YELLOW枚举类型
+```
 
 
+#### 使用枚举代替数字来进行分类
+如果项目中需要通过不同的数字来判断不同的类别，可以使用枚举类型来表示这些数字，可以将数字转换成相应的枚举成员来处理。例如邮箱，手机，微信小程序，微信公众号这几类注册方式，用户请求传过来的数字在后端处理的时候，总不能直接使用100，101这样的数字来区分不同的注册方式。
+```python 
+from enum import Enum
+class ClientTypeEnum(Enum): #继承枚举类型
+    USER_EMAIL=100
+    USER_PHONE=101
+    USER_MINA=200
+    USER_WX=201
+```
 
 
+## 闭包
+<b class="danger">函数及函数声明时所在的环境变量的集合叫闭包。</b>
+** 可在函数外部调用函数内部的局部变量。闭包可以保存函数的环境变量，避免函数执行后环境变量被垃圾回收。**
+查看某个函数的闭包使用 <b class="danger">.\_\_closure\_\_[0].cell_contents</b>
+```python 
+def curve_pre():
+    a = 25
+    def fn():
+        return a + 5
+    return fn
+
+f = curve_pre()
+f.__closure__[0].cell_contents
+```
+
+```python 
+def save_steps(x):
+    origin = x
+    def walk_step(step):
+        nonlocal origin #nonlocal 声明引用的是外层函数的局部变量
+        origin += step #如果不使用nonlocal显示声明，此行修改变量会提示变量不存在的错误
+
+        print(origin)
+        return origin
+    return walk_step
+
+fn = save_steps(0)
+fn(2)
+print(fn.__closure__[0].cell_contents)
+fn(6)
+print(fn.__closure__[0].cell_contents)
+fn(12)
+print(fn.__closure__[0].cell_contents)
+```
+**需要修改闭包局部变量时，首先要使用nonlocal显示声明变量不是内层函数的局部变量**，否则会提示变量不存在错误
+
+## Lambda 表达式 匿名函数 
+lambda表达式定义匿名函数 ``lambda parament_list: expression``,**lambda表达式后面只能是 <b class="danger">一个简单的表达式</b> ，不能是复杂的代码块，lambda表达式不需要使用return**
+```python 
+#定义普通函数
+def add(x,y):
+    return x+y
+
+#lambda表达式定义匿名函数
+lambda x,y: x + y
+#匿名函数的调用
+f = lambda x,y: x+ y
+f(1,2)
+
+(lambda x,y:x+y)(1,2)
+```
+
+<b class="asso">ES: JS匿名函数</b>
+```js
+(function(x,y){
+    return x+ y 
+})(1,2)
+
+(x,y)=> x+ y
+```
+
+## 三元表达式
+**条件为真时返回的结果x  if 条件判断 else条件为假时返回的结果y**
+`resunt = x if(expression) else y` 返回x时必须满足expression中的条件，否则返回y
+
+<b class="asso">ES: JS三元表达式</b>
+`(expression)?x:y`
 
 
-
-
-
-
-
-
-
-
-
+## 函数式编程
+函数式编程 属于声明式编程中的一种，它的主要思想是**将计算机运算看作为函数的计算**，也就是**把程序问题抽象成数学问题**去解决。函数式编程中，我们可以充分利用数学公式来解决问题。也就是说，任何问题都可以通过函数（加减乘除）和数学定律（交换律、结合律等），一步一步计算，最终得到答案
 
 
 
