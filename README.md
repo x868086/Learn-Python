@@ -1357,7 +1357,7 @@ print(fn.__closure__[0].cell_contents)
 **需要修改闭包局部变量时，首先要使用nonlocal显示声明变量不是内层函数的局部变量**，否则会提示变量不存在错误
 
 ## Lambda 表达式 匿名函数 
-lambda表达式定义匿名函数 ``lambda parament_list: expression``,**lambda表达式后面只能是 <b class="danger">一个简单的表达式</b> ，不能是复杂的代码块，lambda表达式不需要使用return**
+lambda表达式定义匿名函数 ``lambda parament_list: expression``,**lambda表达式后面只能是 <b class="danger">一个简单的表达式</b> ，不能是复杂的代码块，lambda表达式不需要使用return**。通常lambda表达式是一行的匿名函数，但也可以通过反斜杠和括号来实现换行。
 ```python 
 #定义普通函数
 def add(x,y):
@@ -1391,6 +1391,55 @@ f(1,2)
 
 ## 函数式编程
 函数式编程 属于声明式编程中的一种，它的主要思想是**将计算机运算看作为函数的计算**，也就是**把程序问题抽象成数学问题**去解决。函数式编程中，我们可以充分利用数学公式来解决问题。也就是说，任何问题都可以通过函数（加减乘除）和数学定律（交换律、结合律等），一步一步计算，最终得到答案
+
+#### map函数
+**map函数返回的是map类**，结果使用 <b class="danger">list(</b>map_x<b class="danger">)</b>  转成列表
+**map函数把要遍历的目标对象逐一传入前面的函数中进行处理**,返回一个map类
+```python 
+list_x = [1,2,3,4,5,6,7,8]
+list_y = [1,2,3,4,5,6]
+
+def square(x):
+    return x * x
+
+#方法一 for...in循环
+for x in list_x:
+    square(x)
+
+#方法二 map函数遍历
+r = map(square,list_x)
+#返回结果[1，4，9，16，25，36，49，64]
+
+#使用lambda表达式定义匿名函数,简化代码
+r1 = map(lambda x: x*x, list_x)
+print(list(r1))
+#返回 [1, 4, 9, 16, 25, 36, 49, 64]
+
+#使用lambda表达式定义黎明函数，简化代码
+r2 = map(lambda x,y:x*x +y, list_x,list_y) #这里传入的是两个list参数
+#返回 [2, 6, 12, 20, 30, 42]
+```
+
+#### filter函数
+**返回一个过滤后的集合**，结果使用 <b class="danger">list(</b>fliter_x<b class="danger">)</b>  转成列表
+```python 
+list_x = [1,0,1,1,0,1,0]
+r = filter(lambda x: True if x > 0 else False, list_x)
+print(list(r))
+#返回[1,1,1,1]
+```
+<b class="danger">filter函数中的lambda表达式的返回值必须为布尔值或者0，1类布尔值，</b>即必须是能表示真假的值
+
+
+#### reduce函数
+**每次的计算结果作为下一次计算的参数**
+```python 
+from functools import reduce
+list_x = [1,2,3,4,5,6,7,8]
+r = reduce(lambda x,y:x+y, list_x, 10)
+```
+**reduce函数的第三个参数10是初始值**
+
 
 
 
