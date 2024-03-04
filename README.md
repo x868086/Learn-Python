@@ -524,7 +524,19 @@ python编码规范：
 6   pass
 ```
 <b class="asso">ES:if () {} else if () {} else {}</b>
-### 2. 循环while else
+
+### 2. match 条件判断
+```python 
+match status_code:
+    case 400:
+        print("Bad Request")
+    case 404:
+        print("Not Found")
+    case _: #默认情况
+        # 执行默认情况的代码，即所有其他未被明确匹配的情况
+```
+
+### 3. 循环while else
 ```python
 1 while condition:
 2   pass1
@@ -542,7 +554,7 @@ while循环的使用场景是，设定condition为条件判断，condition条件
 
 <b class="asso">ES: while(){}, do{} while</b>
 
-### 3. 循环for else
+### 4. 循环for else
 for 循环用来遍历/循环 序列、集合、字典
 
 for **target_list in expression_list**:
@@ -562,7 +574,7 @@ else:
 print(a,<b class="danger">end = '|'</b>)
 print函数使用<b class="danger">end参数</b>可以将需要打印的元素横向间隔排列。
 
-### 4.循环-列表推导式
+### 5. 循环-列表推导式
 
 new_list = **[** expression for item in iterable **if** condition **]**
 ```python 
@@ -571,7 +583,7 @@ new_list = [item * 2 for item in list1 if item>0]
 print(new_list)
 ```
 
-### 5.循环控制 终止循环 使用break, continue
+### 6. 循环控制 终止循环 使用break, continue
 break 终止循环跳出整个循环，continue 跳过本次循环但会继续执行下一次循环。<b class="danger">break</b>会<b class="danger">中断</b>for循环遍历，使for循环结束后的else不执行，但<b class="danger">在循环嵌套的场景下，break只会中断所在层级的循环</b>，<b class="danger">对外层循环不会中断</b>
 ```python
 1 a = [1,2,3]
@@ -1577,6 +1589,258 @@ help(f4) #返回f4函数的说明文档 this is f4 doc
 ```
 f4.\_\_name\_\_ 函数的名称仍然是f4,
 f4.\_\_doc\_\_ 函数的注释还是原函数的注释
+
+
+## python编程技巧
+#### 1. 使用<b class="danger">表驱动编程</b>，替代match
+```python 
+def get_sunday:
+    return 'Sunday'
+def get_monday:
+    return 'Monday'
+def get_tuesday:
+    return 'Tuesday'
+def get_default:
+    return 'Unknow'
+dicts = {
+    0:get_sunday,
+    1:get_monday,
+    2:get_tuesday
+}
+day_num = 2
+dicts.get(day_num,get_default)()
+# 当获取不到指定day_num所对应的值时，默认返回get_default方法
+```
+
+#### 2. 列表推导式
+根据已经存在的列表创建一个新的列表。
+```python 
+a = [1, 3, 5, 7, 9]
+b = [i for i in a] #返回一个新的列表
+b1 = [i**2 for i in a] #返回a列表每个元素的平方，生成新的列表
+
+# 条件筛选列表推导式
+c = [i**2 for i in a if i>=5] #筛选出原列表中大于等于5的元素的平方，生成新的列表
+```
+**列表、元组、集合都可以被推导**
+```python 
+a = {1,2,3,4,5,6,7,8} #集合
+bb = (1,2,3,4,5,6,7,8) #元组
+cc = [1,2,3,4,5,6,7,8] #列表
+
+a1 = [i**2 for i in a] #集合推导出列表
+a2 = {i**2 for i in a} #集合推导出集合
+a3 = [i**2 for i in bb] #元组推导出列表
+a4 = {i**2 for i in cc} #列表推导出集合
+```
+
+**字典推导出列表**
+```python 
+students = {
+    'name1': 18,
+    'name2': 22,
+    'name3': 24
+}
+#将原字典的key提取推导出新的列表
+b = [key for key,value in students.items()]
+print(b)
+#返回 ['name1', 'name2', 'name3']
+
+#将原字典的key,value提取推导出新的字典
+c = {key:value for key,value in students.items()}
+print(c)
+#返回 {'name1': 18, 'name2': 22, 'name3': 24}
+```
+
+
+#### 3. None 判空操作 
+None的类型是 **NoneType** ,表示此处有值但为空
+<b class="asso">ES: null</b>
+<b class="danger">判空操作</b> `if a:`, `if not a:`
+```python 
+a = None
+a = ''
+a = []
+a = False
+#以上几种类型 都可以使用 if a, if not a 来判断控制
+```
+
+<b class="danger">对象存在，但并不一定是True</b>
+class类在做**真假值判断**的时候，会调用 **bool()** 方法将类转换成bool类型，class类其内部定义的`__bool__(self)`,`__len__(self)`方法会作为判断的依据。当__bool__和__len__同时存在时，优先调用__bool__
+
+```python 
+class Test():
+    def __bool__(self):
+        return False  #只能 return True/False
+    def __len__(self):
+        return 0 #能return False/True/0/1
+
+#基于以上代码
+bool(test()) #返回False  因为有内部定义的__bool__(self)方法
+
+if Test():
+    print('T')
+else:
+    print('F')
+#这里打印F，因为Test()返回的是False，所以执行的是else:语句
+```
+
+#### 4. 海象运算符 :=
+对一个表达式求值，或对一个函数的调用求值，求值后在一行代码中对一个变量赋值。<b class="danger">顺便声明一个由表达式计算结果（或函数求值结果）赋值的变量</b>
+`(variable_name := expression or value)`
+**海象运算符，避免表达式多次求值， 提高了性能**
+`b = len('abc')` 如果要多次引用`len('abc')`表达式计算的结果，可以使用海象表达式简化代码
+
+```python 
+b := len('abc')
+```
+```python 
+a = 1 + 2
+if a>0:
+    print('Y')
+
+#使用海象运算符改写
+if (a:= 1+2)>0:
+    print('Y')
+# 打印Y
+```
+
+```python 
+def abc():
+    return 1
+
+if (a := abc()) > 0:
+    print('Y')
+# 打印Y
+```
+
+#### 5. @dataclass 装饰器简化构造函数
+```python 
+from dataclasses import dataclass
+
+@dataclass
+class Student():
+    #以下为语法糖
+    name:str 
+    age:int
+    school_name:str
+
+    # def __init__(self,name,age,school_name):
+    #     self.name=name
+    #     self.age=age
+    #     self.school_name=school_name
+
+    def fn(self):
+        print(self.name)
+
+stu1 = Student('tiger',18,'sanxia')
+stu1.fn()
+#返回 tiger
+
+print(stu1.__repr__())
+#返回 Student(name='tiger', age=18, school_name='sanxia')
+```
+**当使用@dataclass装饰器，会自动生成以上代码中注释掉的构造函数这部分代码,所以可以不写构造函数执行过程**
+
+`@dataclass(init=True,repr=True)` init参数默认True,repr默认参数True
+
+`__repr__()`是一个内置函数，用于获取对象的“官方”字符串表示形式。这个“官方”表示形式通常可以通过  eval()  函数重新创建对象
+因此  repr()  返回的字符串应该是有效的 Python 表达式。
+
+```python 
+@dataclass(init=False, repr=False) #关闭构造函数, 关闭repr
+class Student(): 
+    name:str
+    age:int
+    school_name:str
+
+stu1 = Student('tiger',18,'sanxia') #这里会报错，因为上面已经关闭了构造函数
+```
+
+
+#### 6. 迭代器 iterator
+**可迭代对象iterable** 凡是可以被for...in循环遍历的对象就是可迭代对象。比如列表、元组、集合都具有可迭代接口。
+
+**迭代器iterator即迭代接口**,是一个可迭代的对象。<b class="danger">但可迭代对象(列表、元组、集合)不一定是迭代器。</b>
+
+自定义部署迭代器需要自定义两个方法`__iter__` `__next__` 迭代器**可以使用next**函数控制**迭代过程**。<b class="danger">迭代器是一次性的</b>,第一次遍历完毕后就无法再遍历了。**可迭代对象是可以多次遍历的，而且没有next()方法控制迭代过程**
+使用自定义部署迭代器，实现一个可迭代的class类
+```python 
+class BookCollection:
+    def __init__(self):
+        self.data = ['往事','只能','回味']
+        self.curs = 0 #定义游标，控制next()方法进度
+    def __iter__(self):
+        return self
+    def __next__(self):
+        if self.curs >= len(self.data): #迭代完成
+            raise StopIteration() #迭代完成，如果游标值超过data列表长度即数据已全部遍历则抛出终止迭代的异常
+        result = self.data[self.curs]
+        self.curs += 1
+        return result
+
+book = BookCollection()
+
+#遍历迭代器使用for in 循环
+for i in book:
+    print(i)
+# 返回如下内容
+# 往事
+# 只能
+# 回味
+
+#使用next()方法控制迭代过程
+print(book.next())
+print(book.next())
+print(book.next())
+```
+<b class="danger">raise StopIteration()</b>遍历结束，手动终止迭代遍历
+
+
+#### 7. 生成器 generator
+生成器是一种特殊的函数，它使用**yield**语句来产生值，可以按需生成值，而不是一次性生成所有值。生成器适用的场景：
+1. **处理大量数据**：当需要处理大量数据或无限序列时，生成器可以逐个生成值，而不需要一次性将所有数据加载到内存中。 
+ 
+2. **节省内存**：生成器是惰性计算的，只在需要时生成值，可以节省内存空间。 
+ 
+3. **迭代操作**：在需要对序列进行迭代操作时，使用生成器可以简化代码并提高效率。 
+ 
+4. **处理无限序列**：生成器可以用于表示无限序列，如斐波那契数列等。 
+5. **异步编程**: 生成器可以与协程一起使用，用于异步编程，处理并发任务。
+```python 
+n = [i for i in range(0,10001)]
+
+#一次性将长列表写入内存中然后遍历，效率不高
+# for i in n:
+#     print(i)
+
+# 使用生成器处理大量数据
+def gen(max):
+    n = 0
+    while n<=max:
+        n+=1
+        yield n #不是return一个值，而是yield一个值
+
+g = gen(10000)
+
+print(next(g))
+print(next(g))
+print(next(g))
+# 以上代码返回 1,2,3
+
+print(g)
+# 打印出生成器
+
+
+#生成器可以迭代
+for i in g:
+    print(i) #打印出所有数字
+    # print(next(g))
+```
+
+**yield**关键字，不同于return，函数执行到return返回函数运行结果后就终止了，函数执行到yield返回yield后的值，但函数不会终止，可以通过next(generator)方法继续执行生成器函数
+
+
 
 
 ----
