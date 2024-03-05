@@ -1224,6 +1224,93 @@ raise customException('这是一个自定义的异常信息')
 
 
 
+
+
+## 正则表达式 re模块
+```python 
+import re
+```
+#### 1. findall函数
+re.findall('正则规则'，目标字符串) #查找出与匹配规则的结果，返回结果是list列表
+
+##### 2. 元字符
+re.findall(' <b class="danger">\d</b> ', a) #查找0-9的数字
+\d、[0-9] #匹配0-9数字
+‘\D’ 、[^0-9] #匹配0-9非数字
+'\w'、'[A-Za-z0-9_]' #匹配单词字符，即数字和字母和下划线
+''\W' #匹配非单词字符符号，包含空白字符符号比如空格，回车，制表符等
+'\s' #匹配空白字符符号比如空格，回车，制表符
+'\S' #匹配非空白字符
+'[\s\S]*?' #匹配除所有字符
+'.' #匹配除换行符\n之外的其他所有字符
+‘a[**cf**]c’ #查找a开头，c结尾，中间是**c或f**的结果
+‘a[**^cf**]c’ #查找a开头，c结尾，中间不是**c或f**的结果
+‘a[**c-f**]c’ #查找a开头，c结尾，中间是**c到f**之间的结果
+
+##### 3. 数量词
+'[a-z]{3,6}' #匹配a-z之间的字符，最少匹配3位，最多匹配6位，贪婪模式匹配
+'[a-z]{3,6}**?**' #匹配a-z之间的字符，最少匹配3位，最多匹配6位，**非贪婪模式**匹配3位即可
+'pytho **\***' #匹配pytho**0次或无限多次**
+'pytho **+**' #匹配pytho**1次或无限多次**
+'pytho **?**' #匹配pytho**0次或1次**
+
+##### 4. 边界匹配
+'\^\d{3,8}\$' ^即字符串开始位置，$即字符串结束位置。数字开头，数字结尾，且长度在3-8位之间
+
+##### 5. 组
+r = re.findall('(Python){3}', s)
+(Python){3} #将Python作为完整的一个分组，判断python是否重复3次
+Python{3} #只判断Python中的单一字符n是否重复3次
+小括号 **(abc)** 分组后，括号中的字符是且关系，中括号 **[abc]** 中的字符是或关系
+
+##### 6. 匹配模式参数，findall的第三个参数
+r = re.findall('正则规则', 目标字符串, re.I | re.S) # re.I即不区分大小写，re.S改变元字符 <b class="danger">.</b> 的匹配规则。多个模式用管道符连接，是且关系
+r = re.findall('c#', 'PythonC#JavaPHP', re.I)
+r = re.findall('c#<b class="danger">.{1}</b>', 'PythonC#<b class="danger">\n</b>JavaPHP', re.I | re.S) 
+目标字符串里面有换行，元字符.是匹配除换行外所有字符，模式参数加上了re.S 就是改变元字符.的匹配特性，匹配包括换行符在内的所有字符。
+
+##### 7. 正则替换，返回结果是字符串
+r = re.sub('C#', 'GO', 'PythonC#JavaPHP',0) #第二个参数是要替换成的字符串，第4个参数count设置为0是不限制替换次数
+第2个参数可以定义成函数，实现更复杂的需求，**比如第一个参数定义的匹配规则匹配出的是变量的时候**
+```python 
+def convert(value):
+    mached = value.group() #value是匹配到正则结果的match对象
+    return 'AA' + mached + 'AA'
+r = re.sub('C#', convert, 'PythonC#JavaPHP', 0)
+```
+第1个参数匹配到之后会传入到convert函数中（convert函数中定义的value参数就是匹配上规则的一组match对象），返回函数执行的内容
+示例
+```python 
+def fn(value):
+    matched = value.group()
+    if(int(matched)>=6):
+    return '9' #这里必须返回字符串，因为正则只能操作字符串
+    else:
+    return '0'
+re.sub('\d', fn, 'A8C3721D86', 0)
+```
+函数作为参数传入另一个函数，就是高阶函数
+
+##### 7. re模块中的search,match函数
+re模块中除了findall之外的其他两个函数search, match，，只匹配一次，**返回结果是match对象** r = re.match('\d', 'A83C7') #返回结果为None，因为match函数会从目标字符串的**首字母**开始匹配，如果首字母没匹配到就返回None
+
+r = re.search('\d', 'A83C7') #search函数会搜索整个字符串，直到找到第一个匹配的结果就会**返回match对象**
+
+##### 8. group()方法
+match对象需要使用group()方法来获取具体的结果
+r=re.search('life<b class="danger">(.\*)</b>python<b class="danger">(.\*)</b>python', 'life is short, i use python, i love python')
+r.group(0) #获取所有分组匹配内容，即返回完整的匹配结果 'life is short, i use pyhon, i love python'
+r.group(1) #获取第一个分组(.\*)匹配的内容，即'is short, i use '
+r.group(2) #获取第二个分组(.\*)匹配的内容，即', i love'
+r.group(0,1,2) #获取指定分组已元组形式返回  ('life is short, i use pyhon, i love python', 'is short, i use ',', i love')
+
+##### 9. groups()方法
+m = re.match(r"(\d+)\\.(\d+)", "24.1632")
+m.groups() #返回('24','1632')
+
+
+
+
 ## JSON
 JSON是轻量级的数据交换格式。JSON是数据格式，常见的数据格式还有XML数据格式。字符串是JSON的表现形式，符合JSON格式的字符串就是JSON。
 
@@ -1563,7 +1650,7 @@ f3('test1','test2',a=1,b=2,c=3)
 **\*args 收敛可变参数, \*\*kw收敛关键字参数**
 
 #### 装饰器的副作用
-使用装饰器后原有**函数的名称会改变为wrapper**，**函数**内的__doc__**说明文档会改变**。
+使用装饰器后原有**函数的名称会改变为wrapper**，**函数**内的 \_\_doc\_\_ **说明文档会改变**。
 解决增加装饰器后函数名称改变的方法：
 ```python 
 import time
@@ -1840,7 +1927,445 @@ for i in g:
 
 **yield**关键字，不同于return，函数执行到return返回函数运行结果后就终止了，函数执行到yield返回yield后的值，但函数不会终止，可以通过next(generator)方法继续执行生成器函数
 
+## python文档化
+文档化是在python代码中添加注释，提供代码的详细说明，包括参数和返回值的说明，以及代码示
+例。
+注解不同于注释，注解有更广泛的作用，注解在python中是一种元数据机制，用于在代码中添加额外信息，可用于类型检查、函数参数、返回值等。注解在python中通常与类型提示一起使用，提供关于变量，参数，返回值的预期类型信息。python的元数据机制是用于组织、管理、存储元数据的模型，即描述数据的信息，包含数据的类型，值的范围，来源以及其他属性。在python中，注解通常使用冒号来分隔表达式和类型。注解用于提供关于变量类型等元数据的信息，而注释则是为了在代码中添加人类可读的解释和说明。注解是Python 3引入的新特性，主要用于类型提示和类型检查。
+ ```python 
+def greet(name: str) -> str:
+    return "Hello, " + name
+ ```
+在这个例子中，**name: str** 和 **\-> str** 就是注解，它们告诉开发者greet函数接受一个字符串类型的参数，并返回一个字符串类型的值。
+**注解** 是Python 3引入的新特性，**主要用于类型提示和类型检查**。使用 **mypy** 这样的静态类型检查工具可以在开发时提供更早的反馈
+```python 
+pip install mypy
 
+# mypy_example.py
+ def greet(name: str, age: int) -> str:
+ return f"Hello, {name} ({age} years old)"
+```
+在命令行中运行 mypy，mypy 将会检查并报告潜在的类型错误。
+```
+mypy mypy_example.py
+```
+
+
+## I/O操作
+python中文件I/O可以通过内置的open()函数实现，该函数打开一个文件并返回一个对象，通过使用文件对象可以对文件进行读，写操作。
+```python 
+#打开，并读取操作
+with open('./text.txt','r') as f:
+   content = f.read()
+   print(content)
+#打开，并读取操作, 按行打印，逐行读取
+with open('./text.txt', 'r') as f:
+   for line in f:
+       print(line)
+```
+
+
+
+## dotenv
+dotenv库用来读取项目中的 <b class="danger">.env文件</b> ，将.env文件中**定义的环境变量导入到当前程序运行的环境中供程序使用**。将<b class="danger">敏感信息（API密钥，数据库密码等）存储在环境变量中</b>而不是硬编码到代码中<b class="danger">提高程序运行的安全性，</b> 因为这些敏感信息不会存储在代码库中，**只存在于程序运行的环境中**。git版本控制信息中可通过 **\.gitignore文件忽略\.env** 配置文件，避免敏感信息上传到远程仓库。
+1. 安装python-dotenv库
+```python 
+pip install python-dotenv
+```
+2. 创建.env文件，并将环境变量写入到.env文件中，每组key=value对应一行
+3. 将.env文件中的环境变量挂在到系统环境中。通过使用load_dotenv函数读取.env配置文件中的环境变量挂载到系统环境中。
+```python 
+from dotenv import load_dotenv
+load_dotenv() #将.env配置文件中定义的环境变量挂在到系统环境中
+SECRET_KEY = os.getenv("SECRET_KEY") #调用环境变量
+```
+
+
+
+
+
+
+## 多线程、多进程
+进程(process)和线程(thread)是操作系统的基本概念，是操作系统程序运行的基本单元。
+**进程是执行中的程序，是资源分配的最小单位**：操作系统以进程为单位分配存储空间，进程拥有独立地址空间、内存、数据栈等。操作系统管理所有进程的执行，分配资源。可以通过fork或 spawn的方式派生新进程，新进程也有自己独立的内存空间。**多进程<b class="danger">并行</b>执行**。
+
+**线程是CPU调度的的最小单位：** 一个进程可以有多个线程，同进程下执行，并共享相同的上下文。线程间的信息共享和通信更加容易。**多线程<b class="danger">并发</b>执行**
+![并发并行](./img/concurrent_parallel.jpg)
+
+**并发**通常应用于 **I/O 操作频繁**的场景，**并行**则更多应用于 **CPU heavy** 的场景。
+**并发(concurrency)**，指同一时刻只能有一条指令执行，多个线程的对应的指令被快速轮换地执行，线程/任务之间会互相切换。
+a. 处理器先执行线程 A 的指令一段时间，再执行线程 B 的指令一段时间，再切回到线程 A，快速轮换地执行。
+b. 处理器切换过程中会进行上下文的切换操作，进行多个线程之间切换和执行，这个切换过程非常快，使得在宏观上看起来多个线程在同时运行。
+c. 每个线程的执行会占用这个处理器一个时间片段，同一时刻，其实只有一个线程在执行。
+
+**并行（parallel）** ,指同一时刻，有多条指令在多个处理器上同时执行
+a. 不论是从宏观上还是微观上，多个线程都是在同一时刻一起执行的。
+b. 并行只能在多处理器系统中存在，如果只有一个核就不可能实现并行。并发在单处理器和多处理器系统中都是可以存在的，一个核就可以实现并发。注意：具体是并发还是并行取决于操作系统的调度。
+
+**多线程使用场景**
+多线程/多进程是解决并发问题的经典模型之一。
+<b class="danger">在一个程序进程中，有一些操作是比较耗时或者需要等待的，比如等待数据库的查询结果的返回，等待网页结果的响应。这个线程在等待的过程中，处理器是可以执行其他的操作的，从而从整体上提高执行效率。</b>
+
+比如网络爬虫，在向服务器发起请求之后，有一段时间必须要等待服务器的响应返回，这种任务属于IO 密集型任务。对于这种任务，启用多线程可以在某个线程等待的过程中去处理其他的任务，从而提高整体的爬取效率。
+
+还有一种任务叫作计算密集型任务，或者称为CPU 密集型任务。任务的运行一直需要处理器的参与。如果使用多线程，一个处理器从一个计算密集型任务切换到另一个计算密集型任务，处理器依然不会停下来，并不会节省总体的时间，如果线程数目过多，进程上下文切换会占用大量的资源，整体效率会变低。
+
+所以，如果**任务不全是计算密集型任务，我们可以使用多线程来提高程序整体的执行效率**。尤其对于网络爬虫这种 IO 密集型任务来说，使用多线程会大大提高程序整体的爬取效率，多线程只适合IO 密集型任务。
+
+
+**程序在运行时一次只能执行一个任务（单线程）**，让程序同时执行多个任务就要使用多线程技术。
+1. 程序进入执行状态后就是一个进程，每个进程有自己的独立的内存空间、系统资源，每一个进程的内部数据和状态都是完全独立的。windows中的进程局势exe或者dll程序，进程之间相互独立也可以通信。
+2. 一个进程中可以包含多个线程，多个线程共享一块内存空间和一组系统资源，所以系统在各线程之间切换时，系统开销比进程小得多，因此线程称为轻量级进程。
+3. python程序至少有一个线程即主线程，python程序启动后由python解释器负责创建主线程，程序结束后由python解释器停止主线程。多线程中，主线程负责其他子线程的调度，启动、挂起、停止等。多线程编程时，需要给每个子线程执行分配机会，通过让当前子线程休眠暂停 <b class="danger">（延迟当前子线程的后续执行）执行</b> ，让其他线程有机会执行。如果当前子线程没有休眠，只能等待当前线程执行后再执行第二个线程。
+
+多线程可以把空闲时间利用起来，比如有两个进程函数 func1、func2，func1函数里使用sleep休眠一定时间，如果使用单线程调用这两个函数，那么会顺序执行这两个函数，也就是直到第一个函数执行完后，才会执行第二个函数，这样需要很长时间；如果使用多线程，会发现这两个函数是同时执行的，这是因为多线程会把空闲的时间利用起来，在第一个函数休眠的函数就开始执行第二个函数
+
+python多线程使用场景：如果程序时cpu密集型的，使用python的多线程是无法提升效率的，如果程序时IO密集型的，使用python多线程可以提高程序的整体效率。
+
+CPU密集型（CPU-bound）：CPU密集型也叫计算密集型，指的是系统的硬盘、内存性能相对CPU要好很多，此时，系统运作大部分的状况是CPU Loading 100%，CPU要读/写I/O(硬盘/内存)，I/O在很短的时间就可以完成，而CPU还有许多运算要处理，CPU Loading很高
+
+IO密集型（I/O bound）：IO密集型指的是系统的CPU性能相对硬盘、内存要好很多，此时，系统运作，大部分的状况是CPU在等I/O (硬盘/内存) 的读/写操作，此时CPU Loading并不高，I/O bound的程序一般在达到性能极限时，CPU占用率仍然较低。这可能是因为任务本身需要大量I/O操作，而pipeline做得不是很好，没有充分利用处理器能力
+
+多线程的应用有很多，一些阻塞主线程的操作应该被放到子线程中处理，比如打开文件，网络爬虫。多线程会产生并发问题，多个线程如果同时读取某个变量导致相互干扰产生并发问题，所以实际开发中尽量避免多个线程读取或写入相同的变量。
+```python 
+import _thread as thread
+from time import sleep, ctime
+
+def fun1():
+    print('开始运行func1', ctime())
+    # 休眠4秒
+    sleep(4)
+    print('func1运行结束', ctime())
+def fun2():
+    print('开始运行func2', ctime())
+    # 休眠4秒
+    sleep(2)
+    print('func2运行结束', ctime())
+def main():
+    print('开始运行时间', ctime())
+    # 启动一个线程运行func1函数
+    thread.start_new_thread(fun1, ())
+    thread.start_new_thread(fun2, ())
+    # 休眠6秒
+    sleep(6)
+    print('运行结束时间', ctime())
+
+if __name__ == '__main__':
+    main()
+
+E:\python\python.exe E:/progect/untitled1/untitled1/urls.py
+开始运行时间 Sat Feb 16 09:34:00 2019
+开始运行func1 Sat Feb 16 09:34:00 2019
+开始运行func2 Sat Feb 16 09:34:00 2019
+func2运行结束 Sat Feb 16 09:34:02 2019
+func1运行结束 Sat Feb 16 09:34:04 2019
+运行结束时间 Sat Feb 16 09:34:06 2019
+```
+
+
+
+#### 线程模块 threading ，线程类Thread
+线程模块相关函数：
+```python 
+avtive_count() #返回当前处于活动状态的线程个数
+current_thread() #返回当前的Thread对象
+main_thread() #返回主线程对象，主线程是python解释器启动的线程
+
+import threading
+threading.current_thread()
+threading.active_count()
+threading.main_thread()
+```
+
+创建子线程
+1. 线程对象，由threading模块的Thread类或Thread的子类构建的对象
+2. 线程体，即子线程要执行的代码，通常封装到一个函数中。子线程启动后会执行线程提。
+实现线程体有以下两种方式
+
+a. 自定义函数中实现线程体
+`Thread(target=fnName, name='threadname', args=[x1,x2])`
+target参数指向自定义的线程体函数
+name参数可自定义线程名称
+args为线程体函数提供的参数，列表类型
+示例
+```python 
+import threading
+t1 = threading.Thread(target=Fn1, name ='myThread')
+t1.start()
+```
+b. 自定义线程类实现线程体，run()方法就是线程体函数
+![thread](./img/thead.jpg)
+
+## 线程管理
+1. 等待线程结束，某些场景可以控制主线程等待另一个子线程t1执行结束后才能继续执行
+![thread2](./img/thread2.jpg)
+join(timeout= None) #设置超时时间单位秒，不设置默认一直等待，调用join()方法让主进程阻塞，等待t1子进程执行完毕后再继续执行。
+
+![thread3](./img/thread3.jpg)
+
+![thread4](./img/thread4.jpg)
+
+![thread_result](./img//thread_result.jpg)
+
+
+## python GIL
+由于 Python 中 GIL 的限制，导致**不论是在单核还是多核条件下，在同一时刻只能运行一个线程，导致Python 多线程无法发挥多核并行的优势**。GIL 全称为 Global Interpreter Lock（全局解释器锁)，是Python 解释器 CPython 中的一个技术术语，是Python之父为了数据安全而设计的。
+
+在 Python 多线程下，每个线程轮流执行:
+获取 GIL-->执行对应线程的代码-->释放GIL
+**某个线程想要执行，必须先拿到 GIL**，并且在一个 Python 进程中，GIL 只有一个，导致即使在多核的条件下，同一时刻也只能执行一个线程。每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源。
+![GIL](./img/GIL.jpg)
+Python 由于GIL锁的存在，无法利用多进程的优势，要真正利用多核，可以重写一个不带GIL的解释器， 比如JPython（Java 实现的 Python 解释器）。某些Python 库使用C语言实现，例如 NumPy 库不受 GIL 的影响。在实际工作中，如果对性能要求很高，可以使用C++ 实现，然后再提供 Python 的调用接口。另外Java语言也没有GIL限制。
+
+
+
+
+
+
+
+
+## pyhon常见命令
+```shell
+cls #清屏幕
+pip install packageName
+pip uninstall packageName
+pip #查看帮助
+help(round) #查看某个函数的使用方法
+import this #查看python之禅
+```
+
+## python常用全局函数
+`id(var1)` 显示变量在内存中的位置
+`dir(obj)` **列表形式**返回当前模块下的**所有变量**，包含内置变量，dir(sys)返回sys包的所有变量组成的数组
+1. 操作相关函数
+```python 
+print(obj,end='|')
+a=input()
+exec('print(''Python'')') #执行python语句
+eval('1+1') #执行一个表达式
+type(obj)
+id(obj) #返回某个obj对象的唯一标识
+globals() #返回全局变量的字典
+help()
+isinstance('a', str) #判断一个对象是否为某个类的实例
+issubclass(class1,class2) #判断一个类是否为另一个类的子类
+```
+
+2. 数学函数
+```python 
+len(a)
+max(a)
+min(a)
+round(1.123, 2)
+abs()
+sum()
+sorted(lis) #排序，返回被排序后的list
+reverse(iterate) #返回可迭代对象的反转
+divmod(a,b) #获取a除以b的商和余数
+pow(a，b) #a的b次方
+range(num1,num2, step)
+```
+
+3. 类型转换
+```python 
+str('a') #等同于 js toString(var)
+int(1.0)
+float(a)
+bool(1)
+tuple(iterate) #可迭代对象转换成tuple
+list(iterate) #可迭代对象转换成list
+dict(iterate) #可迭代对象转换成dict
+set(iterate) #可迭代对象转换成set
+iter(iterable) #返回一个可迭代的对象
+enumerate(iterable) #返回一个枚举对象
+hex(int) 转16进制
+oct(int) 转8进制
+bin(int) 转2进制
+chr(int) 转数字为ASCII字符
+ord(str) 转字符为ASCII编码
+```
+
+ ## python对象的方法
+ 1. random
+```python 
+import random
+random.random() #生成0--1之间的随机浮点数
+random.randint(a,b) #生成a,b之间的随机整数
+random.choice(list) #对有序数列随机取样（list, tuple,str）
+random.sample(list, 5) # 对有序数列随机取片段（对list,随机取5个元素）
+random.shuffle(list) #随机打乱有序数列
+```
+
+2. time
+```python 
+import time
+time.sleep(1) #间隔1秒休息一次
+time.ctime() #生成本地时区时间
+time.localtime() #生成本地时间的时间结构
+time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) #格式化时间
+```
+
+3.string
+```python 
+str.format()
+f'str{}'
+str.isnumeric() #判断是否为可计数类型,一二三也会返回True
+str.isdigit() #判断是否为数值类型，一二三会返回Fals
+str.split(',') #以什么分割字符串为列表
+str.strip() #去除空格
+```
+4. list
+```python 
+list1.copy()
+list1.deepcopy()
+```
+
+5. dict
+```python 
+dic.get('key')
+dic.keys()
+dic.values()
+dic.items()
+dict.fromkeys(lis, val) #根据lis生成一个dict,key为lis成员，用val填充
+dict(data) # 转data为字典格式，data的数据是列表[key, value]格式才行
+```
+
+
+## python数据读写
+csv是有分隔符的text文件
+路径的书写三种方式
+`path1 =C:\\Users\\Administrator\\Downloads\\text.txt`
+`path2 = C:/Users/Administrator/Downloads\\text.txt`
+`path = r'C:\\Users\\Administrator\\Downloads\\text.txt'`
+
+#### 处理文件路径模块os
+```python 
+import os
+os.name #系统类型
+os.getcwd() #当前运行脚本的绝对路径
+os.listdir() #返回当前脚本所在目录下的所有文件
+os.chdir('c:\\abc') #切换路径到c:\abc下
+os.remove('c:\\text.txt') #删除文件
+os.rmdir('c:\\abc') #删除文件夹
+os.path.split('c:\\user\\text.txt') #将文件路径转成元素tuple('c:\\user', 'text.txt')
+os.path.exists('c:\\user\\text.txt') #判断文件是否存在，也可以判断文件夹是否存在
+```
+
+##### 1. 读取文件
+```python 
+open(路径, 模式, 编码格式),
+模式r读取，w写入，rw读写，a追加，w+打开并清空，wb 二进制模式写入，
+file = open(path1, 'r', encoding='utf8')
+file.read(10) #读取10个字符
+file.readline() #读取行
+file.readline(5) #读取行的前5个字符
+file.readlines() #读取所有行，并转成列表
+file.seek(0) #上一次读取完后将光标移动到开始位置，便于下次读取
+file.close()
+```
+
+##### 2. 写入文件
+```python 
+file = open('text.txt', 'w', encoding='utf8')
+file.write('abcd')
+file.close()
+
+file.writelines(list) #列表list的成员依次传入writelines方法，水平书写，如果希望换行书写则遍历list在每个成员后 + '\n'
+```
+
+##### 3. pickle存储
+可将数据处理过程中的任何类型数据格式保存为系统中的dump快照文件，**不像写入txt文件时会将原来数据格式转换为字符串**，pickle模块保存的dump快照文件保留的原有的数据类型。
+```python 
+#将数据保存为快照文件
+import pickle
+data = {'a':1,'b':[1,2,3], 'c':'hello world'}
+dump_file = open('data.pkl', 'wb') #创建文件名为data.pkl的快照文件，写入模式
+pickle.dump(data, dump_file)
+dump_file.close()
+
+#读取快照文件，还原数据
+dump_file = open('c:\\user\\data.pkl', 'rb')
+dt1 = pickle.load(dump_file)
+print(dt1)
+```
+
+
+
+
+## 安装pip
+1. 在Python官网上下载Windows版本pip安装包
+https://pypi.org/project/pip/#downloads
+![install_pip](./img/install_pip.jpg)
+下载完成后，将得到一个压缩包，将压缩包进行解压。
+
+2. 打开控制台，使用cd命令进入解压后的文件夹至可执行目录，如下图所示
+![install_pip2](./img/install_pip_2.jpg)
+
+3. 在控制台输入如下命令：
+`python setup.py install`
+回车，控制台将自动安装pip，安装完成后，在控制台输入
+`python -m pip --version`命令
+如果显示‘pip’不是内部命令，也不是可运行的程序，说明，缺少环境变量。
+![install_pip3](./img/install_pip_3.jpg)
+在此，需要在系统环境变量PATH中添加环境变量：C:\Python27\Scripts（本次安装的是Python2.7.10版本，所以需要添加环境变量C:\Python27\Scripts）;添加完成后，再次执行
+`python -m pip --version`  命令，如果控制台输出pip的版本号，说明安装成功。
+
+## pip python包管理工具
+在cmd命令行环境下安装包
+```shell 
+ pip install packName
+ pip install packName[numpy,scipy] #安装包，同时安装包的依赖项
+ pip install packName ==1.2 #指定安装版本
+ pip install --upgrade packName #升级已安装的包
+ pip install --no-dependencies packName #安装包，忽略包的依赖
+ pip install /path/to/packName #安装本地指定目录的包
+ pip uninstall packName
+ pip list #列出当前python环境已安装的所有包或库
+ pip show packName #列出指定包的详细信息
+ pip search packName #在python package index 上查找包的信息
+ pip #查看帮助
+ pip freeze > requirements.txt #导出依赖库，生成依赖包列表文件
+ pip install -r requirements.txt #根据导出的依赖包列表文件，安装依赖包
+ pip install pipreqs #依赖包管理模块
+ pipreqs ./ #导出当前项目目录下所依赖的包
+ pip cache purge
+```
+
+
+
+## Numpy 科学计算工具包
+强大的N维数组对象，重点对二维数组结果进行运算（不用遍历循环），包含随机数，线性代数，傅里叶变化等功能。
+```python 
+import numpy as np
+ar = np.array([[1,2,3],[2,3,4]])
+np.ndim #数组维度
+```
+一维数组：单行
+二维数组：多行多列
+三维数组：多个二维数组构成一个三维数组
+四维数组：多个三维数组构成一个四维数组
+创建数组时指定的行列个数不一样时，会自动转换成一维数组
+
+#### numpy常用方法
+```python 
+ar = numpy.array([1,2,3])  #生成数组
+ar.ndim #数组维度的个数，轴数，或者说秧，维度的数量也称rank
+ar.shape #数组的行列个数
+ar.size #数组元素的总个数，n行m列元素个数是n*m
+ar.dtype 查看数组中元素的类型，python中的type()函数查看的是数组变量的类型
+ar.itemsize 数组中每个元素的字节长度，int32 类型是4字节，float类型是8字节
+ar 查看数组详情
+
+#创建数组
+ar0 = numpy.array([1,2,3,4,5,6,7,8,9])
+ar1 = numpy.array(range(10))
+ar2 = numpy.arange(10)  numpy自带生成数组的方法
+ar3 = numpy.random.rand(10),reshape(2,5) #创建10个随机数，2行5列
+ar4 = numpy.linspace(10, 21, num=20, endpoint= True, retstep=True) #生成10-21之间的数据，均分成20个，endpoint参数指定是否包含最后一个边界数，retstep是否显示步长
+ar5 = numpy.zeros(10) 创建长度为10的数组，用0填充，ones(10)方法类似
+ar6=numpy.zeros((2*5), dtype=numpy.float) 创建2行5列，用0填充的数组，元素为浮点数，ones((2*5), dtype=numpy.int)方法类似
+ar7 = numpy.zeros_like(ar3) 创建一个数组ar7 复制ar3的数组结构，ones_like(ar3)方法类似
+ar8 = numpy.eye(5) #创建一个正方形n*n的单位矩阵，对角线值为1，其余数为0
+```
 
 
 ----
