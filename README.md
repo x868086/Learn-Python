@@ -2123,7 +2123,7 @@ Python 由于GIL锁的存在，无法利用多进程的优势，要真正利用�
 
 
 
-## pyhon常见命令
+## python常见命令
 ```shell
 cls #清屏幕
 pip install packageName
