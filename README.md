@@ -386,7 +386,21 @@ dict: { 'a':100, 'b':'hello' } dict是**无序列表** dict适用于需要通过
 字典的键key可以是字符串也可以是数值,{**1**:'a',**'1'**:'b'} ，这里**两个key1是不同的key**
 字典的**key 必须是不可变的类型**，比如int, str,tuple，list可变所以不能作为key
 获取key对应的value值 {'a':1,'b':2}**['a']**
+获取key对应的value值 {'a':1,'b':2}**.get('a',default)**
+ <b class="danger">get方法没有获取到对应的key时默认返回None,如果指定了default值则返回指定的值</b> 
 定义空的字典type(**dict()**)
+
+```python 
+#获取字典的方法 get和[]
+
+abc =  {'a':1,'b':2}
+# print(abc['a']) #正常输出
+# print(abc['c']) #触发KeyError错误
+
+print(abc.get('a')) #正常输出
+print(abc.get('c')) #没有获取到值时返回None
+print(abc.get('c','没有获取到值时返回的默认值')) #没有获取到值时返回默认值
+```
 
 #### 字典的常用方法
 dic1**.update**(dic2) #合并字典，**会改变dic1**
@@ -1965,8 +1979,13 @@ with open('./text.txt', 'r') as f:
 
 
 
-## dotenv
+## dotenv 环境变量
 dotenv库用来读取项目中的 <b class="danger">.env文件</b> ，将.env文件中**定义的环境变量导入到当前程序运行的环境中供程序使用**。将<b class="danger">敏感信息（API密钥，数据库密码等）存储在环境变量中</b>而不是硬编码到代码中<b class="danger">提高程序运行的安全性，</b> 因为这些敏感信息不会存储在代码库中，**只存在于程序运行的环境中**。git版本控制信息中可通过 **\.gitignore文件忽略\.env** 配置文件，避免敏感信息上传到远程仓库。
+
+dotenv 是一个 Python 库，它可以从 .env 文件中读取环境变量，并将它们添加到运行 Python 代码的环境中。这对于管理敏感数据（如 API 密钥）或配置信息非常有用，因为你可以将这些信息存储在 .env 文件中，而不是硬编码在你的 Python 代码中。
+
+
+
 1. 安装python-dotenv库
 ```python 
 pip install python-dotenv
@@ -1974,13 +1993,19 @@ pip install python-dotenv
 2. 创建.env文件，并将环境变量写入到.env文件中，每组key=value对应一行
 3. 将.env文件中的环境变量挂在到系统环境中。通过使用load_dotenv函数读取.env配置文件中的环境变量挂载到系统环境中。
 ```python 
-from dotenv import load_dotenv
-load_dotenv() #将.env配置文件中定义的环境变量挂在到系统环境中
-SECRET_KEY = os.getenv("SECRET_KEY") #调用环境变量
+from dotenv import load_dotenv, find_dotenv
+_ = load_dotenv(find_dotenv())
 ```
 
 
+`find_dotenv` 函数会在你的项目目录及其父目录中查找 .env 文件。如果找到了 .env 文件，它会返回该文件的路径。
 
+`load_dotenv `函数接受一个文件路径作为参数，并从该文件中加载环境变量。在这段代码中，它加载了 find_dotenv 找到的 .env 文件。
+
+`_ = load_dotenv(find_dotenv()) `这行代码的意思是，找到 .env 文件并从中加载环境变量，但是忽略 load_dotenv 的返回值（它返回一个布尔值，表示环境变量是否成功加载）。_ 是一个常用的变量名，用于表示我们不关心这个值。
+
+在使用 load_dotenv(find_dotenv()) 加载环境变量后，可以使用 Python 的 **os 模块**来获取这些环境变量。` os.environ` 对象，它是一个字典，其键是环境变量的名称，值是环境变量的值。
+`os.environ.get("model3")`
 
 
 
