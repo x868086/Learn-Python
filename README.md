@@ -917,7 +917,7 @@ function fn2(x,y,z) {
 ##### 5. 关键字可变参数
 收敛传入的关键字参数，基于字典的可变参数，传入参数转成dict格式
 ```python 
-def fn(**param)
+def fn(**param):
     print(param)
 ```
 <b class="danger">将传入的参数收敛为dict</b> 
@@ -2357,7 +2357,8 @@ https://pypi.org/project/pip/#downloads
 
 
 
-## Numpy 科学计算工具包
+## 常用python第三方库
+### 1. Numpy 科学计算工具包
 强大的N维数组对象，重点对二维数组结果进行运算（不用遍历循环），包含随机数，线性代数，傅里叶变化等功能。
 ```python 
 import numpy as np
@@ -2392,6 +2393,60 @@ ar7 = numpy.zeros_like(ar3) 创建一个数组ar7 复制ar3的数组结构，one
 ar8 = numpy.eye(5) #创建一个正方形n*n的单位矩阵，对角线值为1，其余数为0
 ```
 
+
+### 2. Pydantic
+Pydantic是一个Python库，用于数据验证和序列化。它的作用是定义数据模型并对数据进行验证，以确保数据的类型和结构符合预期。Pydantic还提供了将数据模型转换为字典或JSON字符串的功能，以便于数据的导出和交互。
+
+#### model_dump_json()
+`model_jump_json`方法用于将Pydantic模型的数据转换为JSON格式的字符串表示。
+
+**升级到最新版pydantic**，部分conda环境安装的pydantic库是老版本，没有model_dump_json()方法
+`conda install -c conda-forge pydantic`
+
+```python 
+from pydantic import BaseModel
+
+#定义一个pydantic类型
+class User(BaseModel):
+    id: int
+    username: str
+    email: str
+
+# 创建模型实例
+# 创建模型实例时，必须显式传入模型的字段名称
+user1 = User(id=1,username='abc',email="123@123.com")
+print(user1)
+
+
+#使用model_dump_json方法讲模型序列化为JSON数据
+print(user1.model_dump_json())
+#打印出JSON格式数据
+```
+
+#### 校验数据类型
+```python 
+from pydantic import BaseModel
+
+#定义一个pydantic类型
+class User(BaseModel):
+    id: int
+    username: str
+    email: str
+
+#创建一个待验证的数据实例
+user_data = {
+    "id": 1,
+    "username": "Alice",
+    "email": "alice@example.com"
+}
+
+try:
+    # 使用定义的数据模型进行数据验证
+    user1 = User(**user_data)
+    print('data is valid')
+except Exception as e:
+    print(e)
+```
 
 ----
 <span class="success">
