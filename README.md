@@ -2448,6 +2448,35 @@ except Exception as e:
     print(e)
 ```
 
+### 3. PDF处理工具
+PDFMiner.six 是一个 Python 库，用于从 PDF 文件中提取文本和布局信息。它是 PDFMiner 库的更新版本。
+PDFMiner.six 可以用来：
+- 提取 PDF 文件中的文本
+- 分析 PDF 文件的布局和结构
+- 提取 PDF 文件中的图像和其他媒体
+- 支持多种语言，包括中文
+
+
+
+## conda命令
+- 创建新环境，指定python版本
+  `conda create --name envName python=3.11.15`
+- 列出所有环境
+  `conda info --envs`
+  `conda env list`
+- 激活环境
+  `conda activate envName`
+- 验证python版本
+  `python --version`
+- 切换回系统默认环境
+  `conda deactivate`
+- 删除环境
+  `conda env remove -n envName`
+- 安装指定版本python
+  `conda install python=3.9.5`
+- 在环境envName中安装指定python版本
+  `conda install -n envName python=3.8.0`
+
 ----
 <span class="success">
     test asdfds adasf dfas 
