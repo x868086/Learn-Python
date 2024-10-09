@@ -755,6 +755,8 @@ from t.c7 import * 导入t模块下c7模块下的所有变量
 3. 避免循环导入
 4. **如果一个.py文件被当作python执行的入口文件，这个.py文件的顶级不会有package包，即便当前.py文件同级路径存在\_\_init__.py也不会打印出\_\_package__**，即如果python直接执行这个.py文件时，这个.py文件中的\_\_package__为NoneType。**如果一个.py文件被当作模块导入后，这个.py文件中的\_\_package__会指向其命名空间路径**。
 5. **如果需要将某个c15.py入口文件当作模块调用可以使用`python -m seven.c15` 明确c15.py的顶级包seven，并使用-m的方式调用，此时c15.py文件的\_\_package__就不为NoneType**
+6. 指定源码文件的执行编码环境，在源码文件的头部加入注释指定源码文件运行的字符集
+`# -*- coding: cp1252 -*-`
 
 #### 相对导入、绝对导入
 import package2.package4.m2 #绝对路径导入，根据文件路径导入某个模块
