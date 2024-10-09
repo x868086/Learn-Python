@@ -354,6 +354,14 @@ Tuple: `(1,2,3,4,'hello')` 元组是<b class="danger">不可变的List</b>,即�
 
 ```
 
+<b class="danger">列表切片通常会返回一个新的列表，但当使用切片赋值时，可以直接修改原列表</b>
+```python
+my_list = [1, 2, 3, 4, 5, 6]
+my_list[2:5] = [111, 222, 333]
+print(my_list) # [1, 2, 111, 222, 333, 6]
+```
+
+
 #### 使用<b class="danger">.copy()</b>方法可<b class="danger">浅拷贝</b>成两个独立的序列
 
 
@@ -546,9 +554,25 @@ match status_code:
         print("Bad Request")
     case 404:
         print("Not Found")
+    case 500 | 503: #使用| 或运算符，表示匹配多个值
+        print("Server Error")
     case _: #默认情况
         # 执行默认情况的代码，即所有其他未被明确匹配的情况
 ```
+```python
+# point是一个元组(x,y)
+    match point:
+        case (0,0):
+            print("Origin")
+        case (0,y):
+            print(f"On the Y axis at {y}")
+        case (x,0):
+            print(f"On the X axis at {x}")
+        case (x,y):
+            print(f"On the ({x},{y})")
+```
+
+<b class="asso">ES:switch case</b>
 
 ### 3. 循环while else
 ```python
@@ -663,6 +687,8 @@ y1
 y2 = set(x) #转成集合
 y2
 {0, 1, 2, 3, 4}
+
+sum(range(4)) #返回6，即0+1+2+3
 ```
 
 
