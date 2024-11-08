@@ -1969,6 +1969,78 @@ for i in g:
 
 **yield**关键字，不同于return，函数执行到return返回函数运行结果后就终止了，函数执行到yield返回yield后的值，但函数不会终止，可以通过next(generator)方法继续执行生成器函数
 
+
+#### 8.异步编程举例
+当然，我可以使用Python来举例说明async/await的概念。Python 3.5及以上版本引入了asyncio库，支持异步编程和async/await语法。Python 示例假设我们有一个类似的场景，包括两个异步操作：从网络获取数据和写入文件。我们将使用asyncio库来实现这两个操作，并观察它们是如何并发执行的。
+```python
+import asyncio
+import time
+
+# 模拟网络请求的异步函数
+async def fetch_data(url):
+    print(f"开始从 {url} 获取数据")
+    await asyncio.sleep(2)  # 模拟2秒的网络延迟
+    print(f"数据获取完成: 来自 {url}")
+    return f"数据来自 {url}"
+
+# 模拟写入文件的异步函数
+async def write_file(data):
+    print("开始写入文件")
+    await asyncio.sleep(1)  # 模拟1秒的文件写入时间
+    print(f"文件已写入: {data}")
+
+# 定义一个异步函数来处理这两个操作
+async def process_tasks():
+    print("开始处理任务")
+
+    # 任务1：从网络获取数据
+    data = await fetch_data('https://api.example.com/data')
+
+    # 任务2：写入文件
+    await write_file(data)
+
+# 在主程序中模拟其他任务
+async def main():
+    task = asyncio.create_task(process_tasks())  # 创建一个任务
+
+    print("主程序继续运行")
+    await asyncio.sleep(0.5)  # 模拟其他任务
+    print("其他任务1完成")
+    await asyncio.sleep(1)  # 模拟其他任务
+    print("其他任务2完成")
+
+    await task  # 等待process_tasks任务完成
+
+# 运行主程序
+asyncio.run(main())
+```
+
+输出结果运行上述代码，你将看到以下输出顺序：开始处理任务
+主程序继续运行
+开始从 https://api.example.com/data 获取数据
+其他任务1完成
+其他任务2完成
+数据获取完成: 来自 https://api.example.com/data
+开始写入文件
+文件已写入: 数据来自 https://api.example.com/data
+
+**解释:**
+1. 开始处理任务：首先，process_tasks协程被创建并开始执行，输出“开始处理任务”。
+2. 主程序继续运行：由于await fetch_data('https://api.example.com/data')会暂停process_tasks协程的执行，但不会阻塞事件循环，因此主程序中的print("主程序继续运行")会立即执行。
+3. 其他任务1完成：0.5秒后，输出“其他任务1完成”。
+4. 其他任务2完成：1秒后，输出“其他任务2完成”。
+5. 数据获取完成：2秒后，fetch_data的await asyncio.sleep(2)完成，process_tasks协程继续执行，输出“数据获取完成: 来自 https://api.example.com/data”。
+6. 开始写入文件：紧接着，write_file协程开始执行，输出“开始写入文件”。
+7. 文件已写入：1秒后，write_file的await asyncio.sleep(1)完成，输出“文件已写入: 数据来自 https://api.example.com/data”。
+
+**关键点:**
+•暂停执行：在await fetch_data('https://api.example.com/data')处，process_tasks协程会暂停执行，等待fetch_data的异步操作完成。在这段时间内，事件循环可以继续处理其他任务。
+•并发执行：由于await表达式不会阻塞事件循环，其他任务（如asyncio.sleep回调）可以继续运行，从而实现并发执行。
+通过这种方式，async/await使得异步代码更加简洁和高效，同时保持了良好的并发性能。希望这个解释和示例能帮助你更好地理解“当前的async函数会暂停执行，允许其他任务继续运行”的含义。如果有更多问题，欢迎继续提问。内容由AI生成
+已记录
+
+
+
 ## python文档化
 文档化是在python代码中添加注释，提供代码的详细说明，包括参数和返回值的说明，以及代码示
 例。
