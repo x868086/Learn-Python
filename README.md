@@ -1525,6 +1525,7 @@ f(1,2)
 ## 三元表达式
 **条件为真时返回的结果x  if 条件判断 else条件为假时返回的结果y**
 `resunt = x if(expression) else y` 返回x时必须满足expression中的条件，否则返回y
+`value_true if condition else value_false`
 
 <b class="asso">ES: JS三元表达式</b>
 `(expression)?x:y`
