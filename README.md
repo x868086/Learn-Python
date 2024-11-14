@@ -1751,6 +1751,31 @@ b1 = [i**2 for i in a] #返回a列表每个元素的平方，生成新的列表
 
 # 条件筛选列表推导式
 c = [i**2 for i in a if i>=5] #筛选出原列表中大于等于5的元素的平方，生成新的列表
+
+# 在列表推导式中调用函数
+def to_upper(s):
+    return s.upper()
+strings = ['hello', 'world', 'python']
+upper_strings = [to_upper(s) for s in strings]
+
+# 多重迭代，从多个可迭代对象生成列表
+list1 = [1, 2, 3]
+list2 = ['a', 'b']
+combinations = [(x, y) for x in list1 for y in list2]
+print(combinations)  # 输出: [(1, 'a'), (1, 'b'), (2, 'a'), (2, 'b'), (3, 'a'), (3, 'b')]
+
+# 嵌套列表推导式
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+new_matrix = [[x + 1 for x in row] for row in matrix]
+print(new_matrix)  # 输出: [[2, 3, 4], [5, 6, 7], [8, 9, 10]]
+
+# 带条件的多重迭代
+list1 = [1, 2, 3]
+list2 = ['a', 'b', 'c']
+combinations = [(x, y) for x in list1 for y in list2 if x != 2 or y != 'b']
+print(combinations)  # 输出: [(1, 'a'), (1, 'b'), (1, 'c'), (2, 'a'), (2, 'c'), (3, 'a'), (3, 'b'), (3, 'c')]
+
+
 ```
 **列表、元组、集合都可以被推导**
 ```python 
