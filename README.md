@@ -2833,14 +2833,151 @@ result = np.vsplit(a, 2)
         [5, 6, 7, 8]]),
 array([[9, 10, 11, 12],
       [13, 14, 51, 16]])]
+```
 
+##### 数组的切片
+```python
+# 索引切片
+ar = np.arange(16).reshape(4,4)
+ar[2][3] #第三行的第四个元素，索引从0开始
+ar[1:3] #第二行到第四行，不包含第四行，索引从0开始
+ar[2,3] #第三行的第四列的元素，索引从0开始，与ar[2][3]类似
+ar[:1,2:] #第二行的第三列及以后的元素，索引从0开始
+
+# 布尔型索引切片
+ar=np.arange(12).reshape(3,4)
+i = np.array([True, False, True])
+print(ar[i,:]) #将ar的行按i即[True, False, True]来切片，即保留第0行和第2行，列为:即保留所有列
+print(ar[:,i]) #将ar的列按i即[True, False, True]来切片，即保留第0列和第2列，行为:即保留所有行
+print(ar>5) #会返回一个元素为True或者False的二维数组，可以利用这个二维数组来筛选原数组的元素
+ar[ar>5] #将布尔数组套到原数组上，筛选原数组
+[[False False False False]
+ [False False  True  True]
+ [ True  True  True  True]]
+```
+
+##### numpy中的随机数
+```python
+np.random.normal(size=(4,4)) #用随机数生成4*4的数组，正态分布，元素为-1到1之间的浮点数
+np.random.randn(4,4) #用随机数生成4*4的数组，正态分布，元素为浮点数-1到1之间
+np.random.randn(100) #生成100个-1到1之间正态分布的随机数
+
+np.random.rand(4,4) #用随机数生成4*4的数组，均匀分布，元素为浮点数0-1
+np.random.rand(4,4)*100 #生成4*4的数组， 0-100的随机数，均匀分布
+np.random.rand(100) #生成100个在0-1之间的均匀分布的随机数
+
+np.random.randint(2,9) #取一个区间内的随机整数，均匀分布
+np.random.randint(10,size=10) #在0-9之间取10个随机整数，组成一维数组
+np.random.randint(10,size=(2,5)) #在0-9之间取10个随机整数，组成二维数组
+np.random.randint(10,20,size=(3,3)) #在10-19之间取 3*3的二维数组
+```
+
+##### numpy 数据输出
+```python
+import os
+os.chdir('C:\\users\\desktop\\')
+np.load('')
+np.save('test.npy',ar) #存为npy数组文件
+np.load('test.npy') #读取npy的数组文件
+
+np.savetxt('test.txt',ar,delimiter=",") #存成逗号分割的txt文件
+
+# 数据读取时也要指定分隔符
+np.loadtxt('test.txt',ar,delimiter=",") #读取逗号分隔符的txt文件
+```
+---
+
+### 2.pandas
+基于numpy构建，在pandas中一维数组**Series**, 二维数组**dataframe**
+```python
+import pandas as pd
+import numpy as np
+
+ar = np.random.rand(5) #生成5个随机浮点数组成的一维数组
+s=pd.Series(ar) #将一维数组转换成Series，series是一个自带索引index的数组，即一维数组+索引
+
+# 查看索引信息， 索引是生成器类型。索引可以不是数字，可以是字母。索引可以是不同类型数值混合使用。
+# RangeIndex(start=0, stop=5, step=1)
+print(s.index) 
+
+# 查看series的所有值，是narray数组类型
+# [0.56305847 0.98721076 0.02718032 0.15178964 0.23487075]
+s.values 
+```
+##### 创建Series
+```python
+# 1. 通过字典创建序列
+dic=['a':1,'b':2,'c':3,5:10]
+s = pd.Series(dic) #返回索引是a,b,c,5 对应值是1,2,3,10的序列
+
+# 2. 通过一维数组创建序列
+ar =np.random.rand(10)
+s = pd.Series(ar)
+
+# 3. 通过标量（静态的值）创建序列
+s=pd.Series(100,index=range(4)) #索引0-3，由100构成的4个值的序列
+```
+
+##### Series的参数
+- index #指定索引，**索引的数量必须和值的数量一致**
+- dtype #指定值的类型
+- name #指定Series的名称，可以通过s.rename('test') 来修改
+
+##### Series的索引
+```python
+s=pd.Series(np.random.rand(10))
+1. 位置索引
+s[5] #根据位置索引查找第6个值，索引从0开始
+s[[6,3]] #根据多个索引查找多个值，索引可以不按原顺序，索引是数组类型
+s[-1] #位置索引不支持-1这种相对位置
+
+2.标签索引
+s=pd.Series(np.random.rand(5),index=['a','b','c','d','e'])
+s['a'] #通过名称为a的标签索引找到对应的值
+s[['b','a']] #通过多个标签名称索引查找多个对应的值，可以不不按原顺序。索引是数组类型
+
+3.切片索引
+s1=pd.Series(np.random.rand(5)) #不指定索引信息时，默认为位置索引
+s2=pd.Series(np.random.rand(5),index=['a','b','c','d','e']) #指定标签索引
+s1[1:4] # 取位置索引为1-4，不含位置索引为4的3个元素
+s1[:-1] # 切片可以用相对位置
+s1[-1] # 通过位置索引查找元素，不能用相对位置
+s1[1:5:2] #位置索引切片，可指定步长
+s2['a':'c'] #取标签索引a-c的三个元素，包含c，必须按标签索引顺序
+s2[0:3] #不指定标签索引时，也可以通过位置索引查找，取位置索引0-3，不包含3的3个元素
+s2['a':'d':2] #标签索引切片，可指定步长
+
+4.布尔型索引
+s=pd.Series(np.random.rand(3)*100)
+s[4]=None #设置第五个元素为None
+s[4]=np.nan #设置第四个元素为NaN，注意NaN和None不一样
+bs1=s>50 #生成一个值为布尔类型序列
+0     True
+1    False
+2    False
+4    False
+bs2=s.isnull() #判断序列中的每个值是否为null，生成一个值为布尔类型序列
+0    False
+1    False
+2    False
+4     True
+bs3=s.notnull() #判断序列中的每个值是否不为null，生成一个值为布尔类型的序列
+0     True
+1     True
+2     True
+4    False
+s[bs3] #用生成的布尔序列来取s序列，返回第1,2,3三个元素
 
 ```
 
 
 
-### 2.pandas
 
+
+
+
+
+---
 
 ### 3. Pydantic
 Pydantic是一个Python库，用于数据验证和序列化。它的作用是定义数据模型并对数据进行验证，以确保数据的类型和结构符合预期。Pydantic还提供了将数据模型转换为字典或JSON字符串的功能，以便于数据的导出和交互。
