@@ -2907,7 +2907,7 @@ s.values
 ##### 创建Series
 ```python
 # 1. 通过字典创建序列
-dic=['a':1,'b':2,'c':3,5:10]
+dic={'a':1,'b':2,'c':3,5:10}
 s = pd.Series(dic) #返回索引是a,b,c,5 对应值是1,2,3,10的序列
 
 # 2. 通过一维数组创建序列
@@ -2970,7 +2970,44 @@ s[bs3] #用生成的布尔序列来取s序列，返回第1,2,3三个元素
 
 ```
 
+##### Series的数据查看，重新索引，索引对齐，添加修改删除值
+```python
+# 查看数据
+s = pd.Series(np.random.rand(15))
+s.head() #查看前5个元素
+s.head(2) #查看前2个元素
+s.tail() #查看后5个元素
 
+# 重新索引，按新的索引重新排序
+reindex(['a','b','g','h']) #重新索引，按新的索引重新排序，如果新的索引不存在，则索引对应的值为NaN，如果新的索引存在，则索引对应原来的值
+reindex(['a','b','g','h'],fill_value=0) # 重新索引，如果索引对应的值不存在，则用0填充
+s=pd.Series(np.random.rand(5),index=['a','b','c','d','e'])
+s.reindex(['c','d','f','a'],fill_value=0) #重新索引，索引f不存在，用0填充
+
+# 索引对齐
+s1=pd.Series(np.random.rand(4),index=['jack','jack','tom','kitty'])
+s2=pd.Series(np.random.rand(3),index=['jack','tom','kitty'])
+print(s1)
+print(s2)
+print(s1+s2) # 索引对齐，如果索引对齐（相等），则相加，否则返回NaN
+
+# 索引删除
+s=pd.Series(np.random.rand(5),index=list('abcde'))
+s1=s.drop('a') #返回删除后的新序列
+s2 = s.drop(['c','d']) #返回删除后的新序列
+s.drop(['c','d'],inplace=True) #删除原序列中的索引
+
+# 添加索引
+s1[5]=100 # 通过索引标签添加元素
+s1['f']=200
+
+s1.append(s2) #添加一个Series，返回一个新序列
+
+# 修改索引
+s1.index=['a','b','c','d','e','f']
+s1.rename(index={'a':'jack','b':'tom'}) # 通过关键字映射的方式修改索引
+
+```
 
 
 
