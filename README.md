@@ -3111,13 +3111,32 @@ print(user.email)  # 输出: john.doe@example.com
 
 
 ### 4. PDF处理工具
-PDFMiner.six 是一个 Python 库，用于从 PDF 文件中提取文本和布局信息。它是 PDFMiner 库的更新版本。
-PDFMiner.six 可以用来：
-- 提取 PDF 文件中的文本
-- 分析 PDF 文件的布局和结构
-- 提取 PDF 文件中的图像和其他媒体
-- 支持多种语言，包括中文
+![alt text](./img/pdf-extract.png)
 
+- 1.文档解析工具，pdf处理库
+    - PyPDF
+    - PyMUPDF
+
+    - PDFMiner.six 是一个 Python 库，用于从 PDF 文件中提取文本和布局信息。它是 PDFMiner 库的更新版本。
+    PDFMiner.six 可以用来：
+        - 提取 PDF 文件中的文本
+        - 分析 PDF 文件的布局和结构
+        - 提取 PDF 文件中的图像和其他媒体
+        - 支持多种语言，包括中文
+
+- 2.OCR工具解析PDF文件
+    - pytesseract OCR库
+
+- 3.智能文档解析工具（IDP）
+    - 基于LlamaCloud 提供的解析工具 llamaParse，将文档解析为PDF格式，每天1000页免费额度。
+    - e2m
+
+
+
+- 4.其他PDF转markdown工具
+    - docling
+    - markitdown
+    - marker
 
 ### 5.elasticSearch
 Elasticsearch 是一个开源的分布式全文搜索引擎，它提供了快速、可扩展的文本搜索和数据分析功能。它主要用于处理大量结构化和非结构化数据，并支持各种数据分析和可视化工具。
