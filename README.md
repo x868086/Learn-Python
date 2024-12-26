@@ -3083,6 +3083,36 @@ print(user.model_dump_json())
 #打印出JSON格式数据
 ```
 
+#### Field字段和v1.0版本的Pydantic
+Pydantic 在 v2 版本中进行了一些重大更改和改进，这可能导致一些旧的代码或依赖项不再兼容。应该明确地使用 pydantic.v1 来确保代码的稳定性和一致性。防止由于安装了最新版本的 Pydantic（可能是 v2 或更高版本）而导致的潜在问题，确保代码继续使用期望的 API 和行为。
+`from pydantic.v1 import BaseModel, Field`
+
+**Field** 是 Pydantic 中用于**定义模型字段**的**类**。用于为字段添加更多的**元数据和校验规则**。
+```python
+
+from pydantic.v1 import BaseModel, Field
+
+# ... 表示该字段是必填项。
+# description 提供字段的描述信息，有助于生成文档或调试。
+# gt, ge, lt, le 分别表示大于、大于等于、小于、小于等于，用于数值类型的范围限制。
+# min_length, max_length 用于字符串类型的长度限制。
+# default 设置默认值（可选字段）
+
+class Product(BaseModel):
+    id: int = Field(..., description="Product ID", gt=0)
+    name: str = Field(..., min_length=1, max_length=100, description="Product Name")
+    price: float = Field(..., ge=0, description="Price of the product in USD")
+    # is_available 默认值为 True
+    is_available: bool = Field(True, description="Whether the product is available")
+
+# 创建实例
+product = Product(id=1, name="Laptop", price=999.99, is_available=True)
+
+print(product)
+
+
+```
+
 #### 校验数据类型
 Pydantic 会自动进行数据验证。如果传入的数据不符合定义的类型或约束，会抛出 ValidationError。
 ```python 
@@ -3143,6 +3173,56 @@ user_data = {
 
 user = User(**user_data)
 print(user.email)  # 输出: john.doe@example.com
+```
+
+### python中的typing模块
+typing模块可以实现**类型标注（Type Annotations）**或称为**类型提示（Type Hints）**。允许在函数定义中**指定参数和返回值的预期类型。** 类型标注不是强制性的：Python 是动态类型语言，类型标注不会影响代码的运行时行为。它们主要用于开发和调试阶段。
+
+类型标注的作用
+- 提高代码可读性，类型标注可以帮助其他开发者（包括未来的你自己）更容易理解函数的意图和用法。通过明确指出参数和返回值的类型，减少了阅读代码时的猜测。
+- 静态类型检查。**使用工具如 mypy**，可以在不运行代码的情况下检查类型错误，从而捕获潜在的bug。有助于在开发早期发现类型不匹配的问题，减少调试时间。
+- 文档生成。类型标注可以用于生成文档，帮助其他开发者了解函数的参数和返回值类型。
+
+```python
+# List[T] 表示一个包含类型为 T 的元素的列表。返回值为 None 表示没有返回值。
+from typing import List
+def process_items(items: List[str]) -> None:
+
+# 希望一个参数或返回值可以是某种类型或者 None 时，使用 Optional。这里定义的是期望返回一个字符串或者 None。
+from typing import Optional
+def get_user_name(user_id: int) -> Optional[str]:
+
+# Tuple[T1, T2, ...] 表示一个包含特定类型元素的元组。这里定义的是期望返回一个包含两个整数的元组。
+from typing import Tuple
+def get_coordinates() -> Tuple[int, int]:
+
+# Dict[K, V] 表示一个键为类型 K、值为类型 V 的字典。这里定义的是期望返回一个键为字符串、值为整数的字典。
+from typing import Dict
+def get_user_info() -> Dict[str, str]:
+
+# Set[T] 表示一个包含类型为 T 的元素的集合。这里定义的是期望返回一个包含整数的集合。
+from typing import Set
+def get_unique_values() -> Set[int]:
+
+# Union[T1, T2, ...] 表示值可以是类型 T1、T2 等中的任意一种。这里定义的是期望参数可以是整数、浮点数或字符串。返回值为 None 表示没有返回值。
+from typing import Union
+def process_input(value: Union[int, float, str]) -> None:
+
+
+# Callable[[Arg1Type, Arg2Type, ...], ReturnType] 表示一个接受特定类型参数并返回特定类型结果的可调用对象。这里定义的是期望参数是两个整数，Callable的返回值是整数的函数。apply_function函数的返回值是整数。
+from typing import Callable
+def apply_function(func: Callable[[int, int], int], a: int, b: int) -> int:
+    return func(a, b)
+
+# Any 表示值可以是任何类型，通常用于不确定类型的情况下。
+from typing import Any
+def process_anything(value: Any) -> Any:
+
+# 表示一个具有固定键和对应类型的字典。定义一个子类来指定键及其对应的类型。这里定义的是期望参数是一个键为title值为string,键为year值为int的字典类型。
+from typing import TypedDict
+class Movie(TypedDict):
+    title: str
+    year: int
 ```
 
 
