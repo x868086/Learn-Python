@@ -3394,6 +3394,55 @@ https://pypi.org/project/pip/#downloads
 - 在环境envName中安装指定python版本
   `conda install -n envName python=3.8.0`
 
+- 安装指定版本包
+`conda install numpy=1.19.2`
+
+- 在 Conda 环境中结合使用 pip 来安装不在 Conda 仓库中的包
+`pip install some-package`
+
+- 导出当前环境配置
+`conda env export > environment.yml`
+
+- 从 environment.yml 文件创建环境
+`conda env create -f environment.yml`
+
+
+pip 安装的包通常存放在 Python 的 site-packages 目录中。
+`C:\Python3x\Lib\site-packages`
+
+conda 在不同环境中安装的包存放在其对应的环境目录下。
+`C:\Users\<username>\Anaconda3\envs\<env_name>\pkgs`
+
+
+## WSL2
+1. 开启CPU虚拟化，进入BIOS设置，intel vmx virtualization technology 开启，amd AMD-V 开启
+2. 开启windows功能，勾选“适用于Linux的Windows子系统”、“虚拟机平台”
+3. cmd管理员身份运行，输入wsl --install --web-download 
+4. 安装其他版本 wsl --install Ubuntu-22.04 --web-download
+5. 输入账号密码
+6. 常用命令
+    - wsl --update #更新wls
+    - wsl --set-default-version 2 #设置wsl2为默认版本
+    - wsl --version #查看wls版本
+    - wsl #开机启动wsl
+    - wsl -d Ubuntu #启动指定的子系统
+    - wsl--shutdown #重启虚拟机，等待8秒后再打开
+    - wsl --list --online #可安装的发行版
+    - wsl --list -v #当前子系统列表
+    - wsl --set-default openSUSE-Leap-15.5 #指定模型的发行版本
+    - wsl --unregister openSUSE-Leap-15.5 #卸载指定的子系统
+    - wsl --export openSUSE-Leap-15.5 d:\wslopensuse\opensuse-bak.tar #备份指定子系统到指定目录
+    - wsl --import Ubuntu2 d:/wsl c:\users\abc\desktop\opensuse-bak.tar #加载备份文件到指定目录d:/wsl(提前先创建)，并启动名称为Ubuntu2的wsl
+    - windows PowerShell中可以混用linux命令和windows cmd命令
+    - nvidia-smi #查看显卡直通
+    - 修改.wslconfig文件（对wls1,wls2都生效），让wsl的ip地址和windows的ip地址直通。在C:\User\username\ 创建.wslconfig文件。用记事本打开添加以下内容并保存。然后执行wsl--shutdown关闭虚拟机，<b class="danger">等待8秒后启动</b> 
+        ```shell
+        [wsl2]
+        networkingMode=mirrored
+        ```
+    - 在linux终端命令行中，输入 **code . 即可打开默认编辑器**
+
+
 ----
 <span class="success">
     test asdfds adasf dfas 
