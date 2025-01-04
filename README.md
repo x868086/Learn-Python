@@ -3444,6 +3444,83 @@ conda 在不同环境中安装的包存放在其对应的环境目录下。
 
 
 ----
+## Jupyter Notebook
+#### 在vscode中启用jupyter进度条
+1. 安装必要的扩展和库
+安装ipywidgets和jupyter_contrib_nbextensions
+首先，确保你已经安装了ipywidgets和jupyter_contrib_nbextensions。这些包提供了Jupyter Notebook中的交互式小部件支持。
+`pip install ipywidgets jupyter_contrib_nbextensions`
+或者conda安装 `conda install ipywidgets jupyter_contrib_nbextensions`
+
+    安装VSCode的Jupyter扩展
+    确保你已经在VSCode中安装了Jupyter扩展。你可以通过以下步骤安装：
+    - 打开VSCode。
+    - 点击左侧活动栏中的扩展图标（四个方块组成的图标）。
+    - 搜索“Jupyter”并安装由Microsoft提供的Jupyter扩展。
+2. 启用ipywidgets扩展
+安装完ipywidgets后，需要启用它以便在Jupyter Notebook中使用：
+在命令行中执行
+`jupyter nbextension enable --py widgetsnbextension`
+
+3. 使用tqdm的Jupyter兼容模式
+在代码中使用tqdm时，确保导入的是Jupyter兼容的版本。你可以使用tqdm.notebook模块来确保进度条能够在Jupyter环境中正确显示。
+```python
+from tqdm.notebook import tqdm
+for i in tqdm(range(100)):
+    # 你的代码逻辑
+    pass
+```
+4. 配置VSCode的Jupyter设置
+有时VSCode的Jupyter设置可能会影响进度条的显示。你可以尝试调整以下设置：
+    - 打开VSCode的设置（可以通过点击左下角的齿轮图标，然后选择“设置”）。
+    - 搜索jupyter.runStartupCommands，添加如下配置以确保ipywidgets被正确加载：
+```json
+"jupyter.runStartupCommands": ["%matplotlib inline", "import ipywidgets as widgets"]
+```
+
+5. 确保内核重启并重新运行所有单元格
+6. 结合pandas使用的示例
+```python
+from tqdm.notebook import tqdm
+
+# 按证件地址中包含的村镇名称匹配支局名称
+def find_support_office(pspt_address, data_project):
+    for index, row in data_project.iterrows():
+        if row['township_clear'] in pspt_address:
+            return row['支局名称']
+    return None
+
+# 使用 tqdm 包装 apply 调用, 使用progress_apply调用
+tqdm.pandas(desc="匹配支局名称")
+data_pspt['村镇名称关联支局名称'] = data_pspt['PSPT_ADDRESS_CLEARN'].progress_apply(lambda x: find_support_office(x, data_project))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
 <span class="success">
     test asdfds adasf dfas 
 </span>
