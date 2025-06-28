@@ -447,7 +447,7 @@ print(abc.get('c','没有获取到值时返回的默认值')) #没有获取到�
 len(dict1) #查看字典的元素个数
 'a' in dict1 #判断dict1中是否有key为a的元素
 1 not in dict1 #判断dict1中的key
-dic1**.update**(dic2) #合并字典，**会改变dic1**
+dic1 **.update** (dic2) #合并字典，**会改变dic1**
 dic3 = dic1 **.copy()** #浅复制一个字典
 a1 = **len(** dic3 **)** #返回字典长度
 'a' **in** dic1 #判断key是否在某个字典中
@@ -458,8 +458,9 @@ a1 = **len(** dic3 **)** #返回字典长度
 
 dict['key']='aa' #修改一个键值对
 dict['x']='a1' #添加一个键值对
-del dict['key'] #删除指定键值对
-dic1 **.get('key')** #获取字典key对应的value
+del dict['key'] #删除指定键值对，当key不存在时，会触发KeyError错误
+dict **.pop('key',default)** #删除指定键值对，当key不存在时，返回指定的值 
+dic1 **.get('key',default)** #获取字典key对应的value, 当key不存在时，返回指定的值
 dic1 **.keys()** #获取dic1的所有的key
 dic1 **.values()** #获取dic1的所有的value
 dic1 **.items()** #获取dic1的所有的key,value构成的成员，返回结果的格式是 **[(** 'key','value' **)]**
@@ -494,11 +495,18 @@ dict(zip(keys, values)) #将迭代器转成字典
 8 print(k,v)
 ```
 
+#### 访问字典和对象的不同
+1. 字典的值只能通过键（my_dict['key'] 或 my_dict.get('key')）来访问，不能通过点号（.）操作符访问。
+2. 点号操作符通常用于访问类或对象的属性设计的，字典的键并不自动成为对象属性。
+3. **字典的键可以是任何不可变类型（如字符串、数字、元组等）**，而对象的**属性**名通常是符合 Python 标识**符命名规则的字符串**。字典的键可以是 'my-key' 或 123，但这些名称不符合对象属性的命名规则，因此无法通过点号访问。
+4. 字典的键是动态的，可以在运行时添加或删除；而对象的属性通常是固定的，或者是通过类定义明确指定的。
+
+
 ## python变量
-值类型 **(不可变)：int，str，tuple，**即便是str[0]='aa' 这种对字符串的操作也不能改变字符串str原来的值。
+值类型 **(不可变)：int，str，tuple，** 即便是str[0]='aa' 这种对字符串的操作也不能改变字符串str原来的值。
 <b class="asso">ES:'string'[0]=1 无效</b>
 
-引用类型**（可变）：list，set，dict** 引用类型的成员的值可以改变。`[1,2][0]='a'`
+引用类型 **（可变）：list，set，dict** 引用类型的成员的值可以改变。`[1,2][0]='a'`
 <b class="danger">id(var) 可以显示一个变量在内存中的地址</b>
 
 
@@ -540,7 +548,7 @@ str类型中，**空字符串**''会被转换成False，注意不是' '(**里面
 list,tuple,set,dict 类型中，空的列表[],空的元祖(),空的集合{},空的字典{'a':1} 会被转换成False. <b class="asso">ES:这里不同于js中的空数组，js空数据会被转换成true</b>
 
 
-身份运算符:**is, not is**, 判断的是两个变量的<b class="danger">值和值的值内存地址</b>是否相同
+身份运算符:**is, is not**, 判断的是两个变量的<b class="danger">值和值的值内存地址</b>是否相同
 a=1 b=1.0
 判断a <b class="danger">==</b> b时返回True，比较运算符判断的是两个值是否相等，不看值的内存地址。
 判断a <b class="danger">is</b> b 的时候返回False，身份运算符判断值和值的内存地址是否相等
@@ -578,7 +586,7 @@ True **and** False, True **or** False, **not** True
 ##### 成员运算符
 lst = [2,3,4]
 dis = {'a':1,'b':2}
-print(1 **in** lst) #返回true
+print(2 **in** lst) #返回true
 print('c' **in** dis) #返回false
 
 ##### 身份运算符
@@ -759,7 +767,7 @@ all(iterable)
 print(all([True, 1, 'non-empty string']))  # 输出: True
 # 有一个元素为 False
 print(all([True, 0, 'non-empty string']))  # 输出: False
-print(all[]) #输出true
+print(all([])) #输出true
 
 #元组
 # 所有元素都为 True
@@ -797,13 +805,18 @@ my_dict = {'a': 1, 'b': 2, 'c': 3}
 print(all(isinstance(key, str) for key in my_dict.keys()))  # 输出: True
 ```
 
+#### any() 判断可迭代对象（如列表、元组等）中是否有任意一个元素为 True
+```python
+print(any([False, False, False])) # 输出: False
+print(any([False, True, False]))  # 输出: True
+```
 
 
 ## python 工程组织结构
 ### 包、模块、类
 python项目的组织结构，最顶级的层级<b class="danger">包</b>层级（类似文件夹），然后是<b class="danger">模块</b>层级（类似文件）、最后是写在模块文件中的<b class="danger">类</b>。**包的文件夹结构是可以嵌套的** 
 
-<b class="danger">  \_\_init__.py 是一个包被导入的时候自动执行的文件，当导入包，或者导入包下面某个模块的某个变量时 \_\_init__.py 文件也会自动执行。</b> 包和包中某个模块中的某个变量被导入时都会自动执行\_\_init__.py
+<b class="danger">  \_\_init__.py 是一个包被导入的时候自动执行的文件，当导入包，或者导入包下面某个模块的某个变量时 \_\_init__.py 文件也会自动执行。</b> 包和包中**某个模块中的某个变量**被导入时都会自动执行\_\_init__.py
 
 文件夹下如果有 <b class="danger">\_\_init__.py</b> 文件，则代表该 <b class="danger">文件夹是一个包</b> ,如果一个文件夹下**没有\_\_init__.py**则python认为该文件夹是**普通文件夹**。
 
@@ -831,7 +844,7 @@ python项目的组织结构，最顶级的层级<b class="danger">包</b>层级�
 3 import t.b.c7 as m #导入t/b下的c7模块，并使用m表示，调用c7模块时使用m.a调用
 ```
 
-**python的导入无法像js语言一样导入js模块的某个变量或函数**，<b class="danger">python只能导入整个模块文件，然后使用命名空间来访问模块下的某个变量。</b>
+
 ```js
 1 // js文件
 2 // require
@@ -900,7 +913,8 @@ from ..m4 import m #相对路径导入，导入相对于当前路径，上一级
 注意，<b class="danger">使用相对路径导入时，不能超过当前模块的顶级包路径，否则出现以下错误</b>
 **attempted relative import beyond top-level package**
 
-<b class="danger">在python项目的入口文件中，不能使用相对路径导入模块，只能使用绝对路径导入。或者使用相对路径导入，但将入口文件当成模块调用(加-m参数)</b> 
+<b class="danger">在python项目的入口文件中，不建议使用相对路径导入模块，优先使用绝对路径导入。或者使用相对路径导入，但将入口文件当成模块调用(加-m参数)</b> 
+无论入口文件如何运行，优先使用绝对导入，避免因运行方式不同而导致的导入问题。如果入口文件是通过 python script.py 的方式直接运行，那么它会被视为一个顶层脚本（top-level script），而不是包的一部分。此时，无法使用相对导入（如 from . import module 或 from .. import module），因为 Python 无法确定它的父包。
 `python -m pkgName.moduleName` *明确入口文件的顶级包*
 
 <b class="danger">绝对引入，要从顶级包开始写 top.ab.cd</b>, **顶级包的位置是相对于python执行入口.py文件的位置来确定的**
@@ -937,7 +951,7 @@ python <b class="danger">-m</b> seven.c15 #python 将seven目录下的c15.py文�
 <b class="danger">\_\_package__</b>  当前模块 <b class="danger">所在的包</b> 名称比如t，**相对于执行入口文件所在的目录**
 \_\_spec__
 **\_\_init__.py** python检测到一个目录下存在\_\_init__.py文件时，python就会把它当成一个模块
-\_\_all__ 在某个模块文件中指定可以被导出的变量，或在\_\_init__中指定可以被导出的模块
+**\_\_all__** 在某个模块文件中指定可以被导出的变量，或在\_\_init__中指定可以被导出的模块。如果不定义 __all__，所有不以单下划线 **_** 开头的名称都会被 * 导入，这可能导致不必要的名称污染，或者导入一些你不希望暴露给用户的内部实现细节。<b class="danger">但显式的导入方式，比如import module或者from module import name 这种方法，不受__all__的限制</b>
 **\_\_closure__[0].cell_contents #查看对象的闭包变量**
 
 当一个模块是程序的**入口文件**时即执行**python abc.py**时，该模块文件的 **\_\_name__** 会显示为 <b class="danger">\_\_main__</b>  ，**\_\_file__**文件路径会显示为**当前模块的文件名**（没有路径）
@@ -985,6 +999,32 @@ a = 1,2,3 #a=(1,2,3)
 `a,b,c = d` d是序列类型时（**tuple,list**），此时a,b,c会序列解包
 `a = 1, 2, 3` #a赋值后是tuple类型
 <b class="asso">ES: let a=1,b=2,c=3 或者 let {a,b,c} = {a:1,b:2,c:3}</b>
+
+#### 使用 namedtuple 进行更优雅的解构
+如果你希望将字典解构成对象的形式，可以使用 collections.namedtuple 或 dataclasses.dataclass。
+```python
+from collections import namedtuple
+
+data = {'name': 'Alice', 'age': 25, 'city': 'New York'}
+Person = namedtuple('Person', ['name', 'age', 'city'])
+
+person = Person(**data)
+
+print(person.name, person.age, person.city)
+```
+
+#### 使用 dataclass 进行更优雅的解构
+```python
+from dataclasses import dataclass
+@dataclass
+class Person:
+    name: str
+    age: int
+    city: str
+data = {'name': 'Alice', 'age': 25, 'city': 'New York'}
+person = Person(**data)
+```
+
 
 ##### 链式赋值
 `a=b=c=1` a=1,b=1,c=1
@@ -1123,7 +1163,7 @@ stu1.fn()
 
 #### 导入类
 ```python 
-from c1 import Student()
+from c1 import Student
 stu2 = Student('penny',18)
 stu2.fn()
 ```
@@ -1184,7 +1224,7 @@ stu1<b class="danger">.\_\_dict\_\_ </b> **对象（包含类或者实例）的_
 实例方法中访问类变量：<b class="danger">ClassName.val</b>  或者 <b class="danger">self.\_\_class\_\_.val</b> 
 
 
-#### 类方法 即类的静态方法
+#### 类方法 @classmethod
 ```python 
 class Student():
     name=''
@@ -1197,29 +1237,46 @@ class Student():
         print(Student.name)
         print(self.__class__.name)
 
-    @classmethod #装饰器，定义类的方法，即类的静态方法
+    @classmethod #装饰器，定义类的方法
     def fn2(cls):
         cls.sum += 1 #访问类的属性
 ```
 
-`@classmethod` 定义类的静态方法时增加 **@classmethod装饰器** 
+`@classmethod` 定义类的方法时增加 **@classmethod装饰器** 
 显式的传入第一个参数cls,传入的参数 **cls** 表示 **class** ，可以使用其他变量代替。
 类的方法中访问类的属性，访问类的属性cls.val，和实例方法中 <b class="danger">self.\_\_class\_\_.val</b> 等价，等价于 <b class="danger">ClassName.val</b>。
 调用类的方法：ClassName.fn2()
 通过类的实例调用类的方法(不建议这么调用没意义):
 `ins1 = ClassName()`
 `ins1.__class__.fn2()`
+<b class="danger">如果方法需要操作类本身（如修改类属性或创建类的实例），使用 @classmethod 在方法函数中显式传入cls</b>
+
+#### 静态方法 @staticmethod
+当一个方法与类相关，但不需要访问类或实例的状态时，可以将其定义为静态方法。不需要传递隐式的 self 或 cls 参数
+```python 
+class MyClass:
+    @staticmethod
+    def my_static_method(x, y):
+        return x + y
+
+# 调用静态方法
+result = MyClass.my_static_method(5, 3)  # 输出：8
+```
+<b class="danger">类的方法不需要访问类或实例的状态，使用 @staticmethod</b>
+
+#### 私有方法 __
+Python 并没有真正的“私有”方法，单下划线 _ 只是一种约定，提醒开发者这些方法不应该被外部直接调用。
 
 
 #### 成员可见性
 对类的变量即类的静态属性的操作，放到类的静态方法中，或者实例方法中去操作。不建议在外部直接操作类的属性比如 `ClassName.val = 1`  这种操作不建议。**成员的可见性即设置私有方法或私有属性，不允许从外部访问或修改，体现封装性**。
 
-**类的私有方法** 在一个类中定义的方法(类方法或者实例方法)名称前面加<b class="danger">\_\_</b>表示该方法为类的私有方法，私有方法在类的外部无法调用，比如`ClassName._fn()`
+**类的私有方法** 在一个类中定义的方法(类方法或者实例方法)名称前面加<b class="danger">\_\_</b>表示该方法为类的私有方法，私有方法在类的外部无法调用，比如`ClassName.__fn()`
 
 **私有变量** 在变量名前加<b class="danger">\_\_</b>该变量就成为私有变量，私有变量只能在对象内部访问，无法在外部访问，比如`obj.a`
 ```python 
 class Student():
-    __abc = 'private val' #声明类的私有变量
+    __abc = '这是类的私有变量' #声明类的私有变量
     def __init__(self,name,age):
         self.name=name
         self.age=age
@@ -1227,15 +1284,26 @@ class Student():
     def fn(self):
         print(self.name) 
         print(self.__instval) #内部访问实例的私有变量
-        print(Student.__instval) #内部访问类的私有变量
-        print(self.__class__._Student__instval) #内部访问类的私有变量
+        print(Student.__abc) #内部访问类的私有变量
+        print(self.__class__._Student__abc) #内部访问类的私有变量
         self.__privateMethod() #Student类的内部访问私有方法
-    def __privateMethod(self): #声明类的私有方法
-        self.__abc = 'modify private val' #操作类的私有变量
+    def __privateMethod(self): #声明实例的私有方法
+        self.__abc = 'modify private val 1' #操作类的私有变量
+        self.__instval = 'modify private val 2' #操作实例的私有变量
         print(self.__abc)
+        print(self.__instval)
+    def __fn2(): # 这里不传入self参数
+        print(Student.__abc) # 操作类的私有变量
 
 stu1 = Student('a',18) #实例化stu1
 ```
+#### Name Mangling
+类的私有变量会被Name Mangling,例如类的私有变量__privateVal会被重命名为_ClassName__privateVal，实际访问时用ClassName._ClassName__privateVal访问。
+
+实例的私有变量会被Name Mangling，例如实例的私有变量__instval会被重名名为_ClassName__instval，实际访问时用obj._ClassName__instval访问。 实例的私有变量是绑定到具体实例上的，而不是直接挂载到类上。
+
+无论是类的私有变量还是实例的私有变量，只要是以双下划线 __ 开头，都会被改写为 _类名__变量名 的形式。
+
 **注意：**
 以上代码中直接访问`Student.__abc` 或者 `Student.__privateMethod`会提示错误，无法直接通过类访问类的私有属性和方法。但可以通过hack方法变通访问`Student._Student__abc`或者`Student._Student__privateMethod`
 
@@ -1326,12 +1394,13 @@ stu1.get_score()
 **多态** 多态是为了提高程序的可扩展性和可维护性。Python中的多态指的是，在运行过程中根据变量所引用对象的类型，动态的决定调用哪个类对象中的方法。
 
 **Object类是所有类的父类，一个类没有继承任何类，默认继承object**。
-类的浅拷贝,Python拷贝一般都是浅拷贝，拷贝时，对象包含的子对象内容不拷贝，因此，源对象与拷贝对象会引用同一个子对象
+
+类的浅拷贝,Python拷贝一般都是浅拷贝，拷贝时，对象包含的子对象内容不拷贝，因此，源对象与拷贝对象会引用同一个子对象。浅拷贝是指创建一个新的对象，但**只复制了原对象的第一层内容（即引用类型的数据仅复制其引用地址）**
 ```python 
 import copy
 a2 = copy.copy(a1)
 ```
-类的深拷贝,使用copy模块的deepcopy函数，递归拷贝对象中包含的子对象，源对象和拷贝对象所有的子对象也不相同。
+类的深拷贝,使用copy模块的deepcopy函数，递归拷贝对象中包含的子对象，源对象和拷贝对象所有的子对象也不相同。深拷贝是指创建一个新的对象，并递归地复制原对象的所有嵌套对象。
 ```python 
 import copy
 a3 = copy.deepcopy(a1)
@@ -1361,12 +1430,16 @@ except 异常类型1 as e:
 except 异常类型2 as e:
     pass
 except (异常类型3,异常类型4) as e #多个异常类型相似可以合并
-except: #没有指定异常类型，默认捕获上面未捕获到的异常
+except Exception as e: #没有指定异常类型，默认捕获上面未捕获到的异常
     pass
 finally:
     pass #正常流程或捕获错误的流程执行完之后，最终都会执行的代码
 ```
 try...except 可以嵌套，但实际开发中尽量不要嵌套，应梳理好程序执行流程再考虑是否需要try...except嵌套
+
+**traceback.print_exc()** 输出异常信息,查看堆栈跟踪信息
+print(**str(e)**) 输出异常信息
+**避免使用裸 except: 因为它会捕获包括 SystemExit 和 KeyboardInterrupt 在内的所有异常，可能导致程序无法正常退出。**
 
 #### 自定义异常类，继承Exception类
 ```python 
@@ -1523,6 +1596,9 @@ JSON对象：只在JS语言中存在JSON对象，在python中是dict，或list d
 ## 枚举
 枚举（enum）是一种特殊的类，通过enum模块提供，主要用于定义**一组命名的常量集合**，每个枚举成员都有一个**唯一**的**名称**和**关联值**
 
+<b class="danger">Enum 强制输入值必须是预定义的成员，避免非法值的使用。Enum 还可以集中定义了所有值，便于后期统一管理和修改。</b>
+
+
 枚举其实是一个类，枚举不可实例化。**枚举就是列举出有穷集合的所有元素，枚举的成员** <b class="danger">不可修改</b> ，且枚举类型中 <b class="danger">没有重复成员名称name</b>，**但成员名称对应的值可以相同，后面相同值对应成员名称name相当**<b class="danger">于是别名</b>
 
 常规的class类、dict类型中定义的属性或变量可以被修改，且类中定义的属性存在相同值的可能，无法确认属性的唯一性。
@@ -1560,7 +1636,7 @@ for v in VIP:
 `VIP.YELLOW is VIP.GREEN` 返回True
 
 #### 枚举转换
-当一只某个值，要根据该值匹配出某个枚举类型中的成员
+当已知某个值，要根据该值匹配出某个枚举类型中的成员
 ```python 
 a=1
 VPI(a) #返回VIP.YELLOW枚举类型
@@ -1581,7 +1657,7 @@ class ClientTypeEnum(Enum): #继承枚举类型
 
 ## 闭包
 <b class="danger">函数及函数声明时所在的环境变量的集合叫闭包。</b>
-** 可在函数外部调用函数内部的局部变量。闭包可以保存函数的环境变量，避免函数执行后环境变量被垃圾回收。**
+**可在函数外部调用函数内部的局部变量。闭包可以保存函数的环境变量，避免函数执行后环境变量被垃圾回收。**
 查看某个函数的闭包使用 <b class="danger">.\_\_closure\_\_[0].cell_contents</b>
 ```python 
 def curve_pre():
@@ -1675,7 +1751,7 @@ r1 = map(lambda x: x*x, list_x)
 print(list(r1))
 #返回 [1, 4, 9, 16, 25, 36, 49, 64]
 
-#使用lambda表达式定义黎明函数，简化代码
+#使用lambda表达式定义匿名函数，简化代码
 r2 = map(lambda x,y:x*x +y, list_x,list_y) #这里传入的是两个list参数
 #返回 [2, 6, 12, 20, 30, 42]
 ```
@@ -1875,6 +1951,10 @@ def to_upper(s):
     return s.upper()
 strings = ['hello', 'world', 'python']
 upper_strings = [to_upper(s) for s in strings]
+
+# 在列表推导式中使用lambda函数，需显式地赋值给变量
+a2 = [(lambda x=i:x.upper())() for i in ['hello', 'world', 'python']] # x=i 表示将列表中的元素依次赋值给x，然后对x进行操作
+
 
 # 多重迭代，从多个可迭代对象生成列表
 list1 = [1, 2, 3]
@@ -3025,7 +3105,7 @@ BaseModel 是 Pydantic 库中的一个核心类，用于定义数据模型。Pyd
 
 
 #### model_dump_json()
-`model_jump_json` 是 Pydantic 模型的一个方法，用于将Pydantic模型的数据实例序列化（转换）为 JSON 字符串。
+`model_jump_json` 是 Pydantic 模型的一个方法，用于将Pydantic模型的数据实例序列化（转换）为 JSON 字符串，不会递归调用嵌套模型的 .json() 方法。返回的是一个 JSON 字符串。适用场景，只需要序列化模型的字段值而不关心嵌套结构。
 
 ```python
 # 美化json输出
@@ -3039,6 +3119,13 @@ def show_json(obj):
     )
     print(str)
 ```
+
+#### pydantic_instance.json()方法
+将整个pydantic模型（包括嵌套模型）以 JSON 格式序列化，自动递归处理嵌套模型。返回的是一个 JSON 字符串。适用场景，需要完整地序列化模型及其所有嵌套结构。
+
+#### pydantic_class.parse_raw(data)方法
+解析原始数据（如 JSON 字符串）并将其转换为pydantic模型实例的方法。将原始数据（如 JSON 字符串、字节流等）解析为 Pydantic 模型实例。自动验证数据是否符合模型定义的结构和类型,返回的是一个经过验证的 Pydantic 模型实例。
+
 
 
 **升级到最新版pydantic**，部分conda环境安装的pydantic库是老版本，没有model_dump_json()方法
@@ -3182,6 +3269,9 @@ typing模块可以实现**类型标注（Type Annotations）**或称为**类型�
 - 提高代码可读性，类型标注可以帮助其他开发者（包括未来的你自己）更容易理解函数的意图和用法。通过明确指出参数和返回值的类型，减少了阅读代码时的猜测。
 - 静态类型检查。**使用工具如 mypy**，可以在不运行代码的情况下检查类型错误，从而捕获潜在的bug。有助于在开发早期发现类型不匹配的问题，减少调试时间。
 - 文档生成。类型标注可以用于生成文档，帮助其他开发者了解函数的参数和返回值类型。
+
+<b class="danger">Optional 通常用于表示一个变量可以是某种类型或者为 None,Optional 实际上是 Union[T, None] 的简写形式，其中 T 是任意类型。这意味着 Optional[T] 表示该值要么是类型 T 的实例，要么是 None。</b> 
+`self.session: Optional[ClientSession] = None` ,定义并初始化一个可选类型的实例属性 self.session，类型为 ClientSession 或 None,将 self.session 的初始值设置为 None，表示在对象初始化时，该属性还没有被赋值为具体的 ClientSession 实例。
 
 ```python
 # List[T] 表示一个包含类型为 T 的元素的列表。返回值为 None 表示没有返回值。
@@ -3336,6 +3426,10 @@ nltk: 自然语言处理，分词，识别命名实体，词性标注，词汇�
 jieba: 中文分词
 
 
+### 7.处理excel文件的库
+openpyxl: 读写excel文件，支持xlsx格式
+
+
 ## 安装pip
 1. 在Python官网上下载Windows版本pip安装包
 https://pypi.org/project/pip/#downloads
@@ -3400,11 +3494,33 @@ https://pypi.org/project/pip/#downloads
 - 在 Conda 环境中结合使用 pip 来安装不在 Conda 仓库中的包
 `pip install some-package`
 
+- 在Conda环境中安装软件包，并指定软件包的来源。模型情况下，conda会从default频道查找软件包，conda-forge频道是一个社区驱动的频道，提供了大量的第三方软件包。
+`conda install -c conda-forge some-package`
+
 - 导出当前环境配置
 `conda env export > environment.yml`
 
 - 从 environment.yml 文件创建环境
 `conda env create -f environment.yml`
+
+- 从已有的一个环境进行更新，可以使用 conda env update
+`conda env update -f /path/to/your/environment.yml
+
+- environment.yml 配置示例：
+```yaml
+name: myenv
+channels:
+  - defaults
+dependencies:
+    - python=3.8
+    - numpy=1.19.2
+    - pandas=1.1.5
+    - scikit-learn=0.24.2
+    - pip:
+        - some-package==1.0.0
+```
+
+
 
 
 pip 安装的包通常存放在 Python 的 site-packages 目录中。
@@ -3442,6 +3558,157 @@ conda 在不同环境中安装的包存放在其对应的环境目录下。
         ```
     - 在linux终端命令行中，输入 **code . 即可打开默认编辑器**
 
+
+
+----
+## Docker
+1. windows主机上安装时，需要在启用或关闭windows功能中，开启hyper-v虚拟化技术,开启WSL2子系统功能
+2. docker镜像加速，在docker desktop中点击设置，在docker engine中添加
+```json
+"registry-mirrors": [
+    "https://2a6bf1988cb6428c877f723ec7530dbc.mirror.swr.myhuaweicloud.com",
+    "https://docker.m.daocloud.io",
+    "https://hub-mirror.c.163.com",
+    "https://mirror.baidubce.com",
+    "https://your_preferred_mirror",
+    "https://dockerhub.icu",
+    "https://docker.registry.cyou",
+    "https://docker-cf.registry.cyou",
+    "https://dockercf.jsdelivr.fyi",
+    "https://docker.jsdelivr.fyi",
+    "https://dockertest.jsdelivr.fyi",
+    "https://mirror.aliyuncs.com",
+    "https://dockerproxy.com",
+    "https://mirror.baidubce.com",
+    "https://docker.m.daocloud.io",
+    "https://docker.nju.edu.cn",
+    "https://docker.mirrors.sjtug.sjtu.edu.cn",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://mirror.iscas.ac.cn",
+    "https://docker.rainbond.cc"
+  ]
+```
+
+```shell
+docker run -d nginx:latest #-d 后台运行，避免终止命令行后容器也终止
+docker ps #查看正在运行的容器,包括容器id（短id）
+docker ps -a #查看所有容器，包括已经终止的容器
+docker inspect container_id #查看容器详细信息
+docker -h # 查看帮助
+docker run --h #查看run命令帮助，加双横线
+
+
+
+# docker 容器镜像的基本操作
+docker images #查看所有镜像，或者docker image list
+docker pull nginx:latest #拉取镜像
+docker rmi image_id #删除镜像
+docker rmi $(docker images -q) #删除所有镜像
+
+# 从docker hub上拉搜索镜像
+docker search image_name
+
+
+
+
+#启动一个ubuntu容器，容器名称c1，-i即交互式, -t即提供终端模式，/bin/bash即进入容器后启动bash shell以便可以在容器中执行命令和操作，
+docker run -i -t --name:c1 ubuntu:latest /bin/bash 
+**在容器启动时，如果不给/bin/bash这类执行命令，比如像nginx就会卡住。建议都加上/bin/bash**
+如果在容器中退出/bin/bash 命令行，则容器会终止，但容器还在。
+
+# 列出所有容器
+docker ps -a #查看所有容器，包括已经终止的容器
+
+# 查看容器详细信息
+docker inspect container_id
+
+# 删除指定名称的容器，注意要先stop停止再删除
+docker rm container_name
+# 批量删除容器
+docker rm $(docker ps -a -q)
+
+# 退出交互式容器，让容器仍然处于后台运行的方式
+按住ctrl+p+q
+# 退出交互式容器后，不进入容器而继续执行容器的命令
+docker exec -it container_name ls /root
+
+
+# 进入到容器中(类似于ssh登录到远程服务器)
+docker attach container_name
+
+# 停止容器
+docker stop container_name
+# 批量停止容器
+docker stop $(docker ps -a -q)
+
+# 启动容器
+docker start container_name
+# 批量启动容器
+docker start $(docker ps -a -q)
+
+# 查看容器内的进程信息
+docker top container_name
+
+# 查看容器占用资源情况，--no-stream参数指取的是某个时间点的情况，不是连续动态的
+docker stats --no-stream container_name
+
+
+# docker prune命令，用来清理docker中的资源，包括未使用的容器、镜像、卷和网络
+# 删除未使用的容器镜像
+docker image prune
+
+# 删除所有未使用的容器镜像
+docker image prune -a
+
+# 删除所有停止的容器
+docker container prune
+
+# 删除所有未被挂载的卷
+docker volume prune
+
+# 删除所有未被使用的网络
+docker network prune
+
+# 删除docker所有资源
+docker system prune
+
+
+
+
+# 容器镜像的操作
+# 将当前运行容器的一些改变提交一个新的镜像
+docker commit 
+1. 使用ctrl+p+q退出容器，保持容器在后台运行
+2. 执行docker commit container_id tage_name
+
+# 保存镜像到本地
+docker save
+docker save -o centosv1.tar centos:v1
+
+# 加载镜像，不支持使用docker export 导出的镜像
+docker load
+docker load -i centosv1.tar
+
+# 导出正在运行的容器
+docker export
+docker export -o centosv1.tar centos:v1
+
+# 导入容器
+docker import
+docker import centosv1.tar centos:v1
+```
+
+### docker容器镜像仓库
+```shell
+# 将镜像标记为 Docker Hub 上的仓库路径，方便后续推送
+docker tag my_image:v1.0 my_dockerhub_username/my_image:v1.0
+
+docker login #登录docker hub
+docker push my_dockerhub_username/my_image:v1.0
+
+# 从 Docker Hub 拉取镜像
+docker pull my_dockerhub_username/my_image:v1.0
+```
 
 ----
 ## Jupyter Notebook
