@@ -1781,7 +1781,7 @@ r = reduce(lambda x,y:x+y, list_x, 10)
 ## 装饰器
 当需求变更之后，不可避免要修改代码，修改代码尽量遵循原则（对修改是封闭的，对扩展是开放的），不要修改函数和对象的定义，**应该通过扩展一个函数，或者扩展一个类来解决需求变更的问题**。 为一个函数增加功能，而不修改原有函数的代码,不改变原有函数的基础上，增加新的功能。
 
-开闭原则 <b class="danger">对修改是封闭的，对扩展是开放的</b>
+开闭原则 <b class="success">对修改是封闭的，对扩展是开放的</b>
 
 装饰器的使用场景
 1. 当需要对某一个封装的单元比如某个函数做出修改，可以在不修改原有函数的基础上使用装饰器的形式扩展原有函数的功能进而达到间接修改原有函数
@@ -2194,8 +2194,174 @@ for i in g:
 **yield**关键字，不同于return，函数执行到return返回函数运行结果后就终止了，函数执行到yield返回yield后的值，但函数不会终止，可以通过next(generator)方法继续执行生成器函数
 
 
-#### 8.异步编程举例
-当然，我可以使用Python来举例说明async/await的概念。Python 3.5及以上版本引入了asyncio库，支持异步编程和async/await语法。Python 示例假设我们有一个类似的场景，包括两个异步操作：从网络获取数据和写入文件。我们将使用asyncio库来实现这两个操作，并观察它们是如何并发执行的。
+## python异步编程
+<b class="success">异步函数即协程</b> 
+协程**coroutine**是一种比线程更轻量的**用户态**并发执行单元，可以理解为协作式多任务处理的基本单位。它允许在函数执行过程中，在任意位置暂停（suspend）执行，并在之后恢复（resume）执行，保持其状态不变。<b class="info">协程是协作式多任务的基本单位。任务是事件循环调度的最小单位。</b> 
+<b class="danger">暂停当前协程的执行，交出控制权给事件循环.</b>
+
+- async语法将fn函数由普通函数变成异步函数**coroutine function**，当调用这个协程function时，不会执行函数内定义的代码和返回定义的返回值，而是返回一个**coroutine对象**（协程对象）
+```python
+async def fn():
+    await print('test')
+``` 
+
+
+<b class="success">1. 正确执行协程函数coroutine function的方法</b>
+- 方法1：**使用await** 在另一个coroutine function 中
+```python
+async def fn1():
+    print('fn1 function')
+
+async def main():
+    await fn1() # 正确地等待协程执行，直接await一个协程对象
+    await asyncio.create_task(my_coroutine()) # 等待任务执行完毕
+
+import asyncio
+asyncio.run(main())
+```
+
+- 方法2： **使用asyncio.run()**
+```python
+async def fn1():
+    print('fn1 function')
+
+import asyncio
+asyncio.run(fn1())
+```
+
+
+<b class="success">2. asyncio的常用方法</b>
+
+asyncio 是 Python 官方提供的异步 I/O 标准库，用于编写并发程序（如网络请求、并发任务、异步 IO 等）。
+```python
+asyncio.run(coro, *, debug=False) #启动并运行一个协程，自动管理事件循环
+asyncio.get_event_loop() #获取当前事件循环（不推荐在 3.7+ 中直接使用）
+
+asyncio.create_task(coro) #创建一个任务并调度执行（推荐方式）
+await asyncio.gather(*tasks) #并发执行多个协程或任务，并等待全部完成
+asyncio.wait_for(coro, timeout) #设置协程的超时时间
+asyncio.shield(coro) #防止协程被取消（取消操作会等待其完成）
+
+await asyncio.sleep(delay) #异步睡眠（不会阻塞事件循环）
+asyncio.as_completed(coros, timeout=None) #按实际的完成顺序返回结果，而不是gather中的启动顺序
+asyncio.wait(coros, return_when=ALL_COMPLETED) #控制等待条件（如任一完成、全部完成等）
+
+```
+
+
+
+<b class="success">3. asyncio 中的 协程，任务，事件循环的概念</b>
+
+协程**coroutine**
+协程是一种可暂停执行的函数，它可以在执行过程中**暂停（yield）**，稍后再**恢复（resume）**，并且在**暂停期间不会阻塞整个程序**。使用 async def 定义的函数就是一个协程函数，调用它会返回一个协程对象（coroutine object）
+
+任务**task**
+任务是**对协程的封装**，它是一个 asyncio.Task 实例，用于**调度协程的执行**。将协程提交给事件循环进行调度。
+<b class="info">协程是协作式多任务的基本单位。任务是事件循环调度的最小单位。</b> 
+
+使用 **await coro** 协程对象更加直接，适用于简单的等待操作。
+**await task 这种方式更灵活，能利用任务提供更多的控制选项，如取消任务或添加回调。**
+task的常用方法：
+```python
+task.done() # 判断任务是否已完成
+task.result() # 获取任务的结果
+task.cancel() # 取消任务
+task.cancelled() # 检查任务是否已被取消
+task.exception() # 获取任务抛出的异常
+task.add_done_callback(callback) # 添加一个回调函数，在任务完成时调用。回调函数会被传递一个任务实例作为参数。
+task.remove_done_callback(callback) 移除任务的指定回调函数
+```
+
+
+事件循环**event loop**
+事件循环是异步程序的核心**调度器**，调度协程/任务的执行。协调所有异步操作的执行顺序。
+
+
+
+<b class="success">4. 创建异步任务列表的示例</b>
+
+- 创建单个异步任务（协程对象），将协程对象封装成列表。 **asyncio.creat_task(asy_fn)**
+`works = [asyncio.creat_task(fn(1)), asyncio.creat_task(fn(2))]`
+- 对异步任务指定回调函数
+`works[0].add_done_callback(task1_callbackfn)`
+- main函数封装，将异步任务整合到代码逻辑里面  
+   **await asyncio.gather(\*works) 获取返回值列表(gather即收集的意思)**
+   **await asyncio.create_task(asyn_fn_name())** 获取单个异步函数（协程函数）返回值
+```python
+async def main():
+    response = await asyncio.gather(*works) # 获取异步函数（协程）的返回值，参数序列传入
+```
+- 执行异步任务（协程） **asyncio.run()**
+`asyncio.run(main())`
+
+
+模拟io事件`await asyncio.sleep(1)` 在**async函数中，不能使用time.sleep() 方法**
+
+
+
+
+#### python中await的理解
+**await是一个显式的，强制性的挂起点**，它直接告诉事件循环：“我现在要等这个异步操作完成，你可以去干别的活了”。协程的执行流在 await 处清晰可见地被中断，并在操作完成后恢复。
+
+
+
+协程对象是协作式多任务的基本单位，async def函数被调用后返回协程对象，但它不会自动运行。 必须通过以下方式之一驱动：
+
+- 在另一个协程内 await 它（会等待它完成）。
+- 作为主入口点传递给 asyncio.run()。
+- 包装成 Task (asyncio.create_task()) 并发执行。create_task 是并发启动协程的关键。
+
+
+
+
+## 深入理解python协程和事件循环
+在 Python 的异步编程中，“暂停当前协程的执行，交出控制权给事件循环” 是一个非常核心的概念。当一个协程执行到 await 某个 coroutine（比如 await asyncio.sleep(1)）时，这个 await 会暂停当前协程的执行，然后把控制权交还给事件循环，让事件循环去执行其他协程或任务。有点像，<b class="info">我现在要等一会儿，你（事件循环）先去干别的事，等我准备好了再叫我。</b>
+
+```python
+async def my_coroutine():
+    print("Start")
+    await fn()     # <-- 这里暂停当前协程，直到 fn() 完成
+    print("End")
+```
+代码执行过程分析
+1. 当 my_coroutine() 执行到 await fn() 时，它会暂停自己，把控制权交还给事件循环。
+2. 事件循环就可以去执行其他协程、任务等。
+3. 等 fn() 完成后，事件循环会唤醒 my_coroutine()，继续执行后面的代码。
+
+**await 的作用是：**
+1. 等待某个异步操作完成（比如 IO、网络请求、定时器等）。
+2. 在等待期间，当前协程不占用 CPU，不阻塞主线程，而是让事件循环去调度其他任务。
+
+### python和javascript中await的对比
+JavaScript 的 await 等待的是 Promise，Python 的 await 等待的是 coroutine、Task、Future。
+Python 的 await 是基于协程和事件循环的协作式异步模型，强调任务调度；而 JavaScript 的 await 是基于 Promise 的异步语法糖，强调链式调用和回调处理。
+
+|对比项|Python 中的 await|JavaScript 中的 await|
+|--|--|--|
+|底层机制|	基于 协程（coroutine） 和 事件循环（event loop）。|	基于 Promise 和 事件循环（event loop）。|
+|执行模型|	协作式多任务（cooperative multitasking）：只有遇到 await 时才会让出控制权。|	基于 Promise 的链式调用，await 只是语法糖，底层还是 Promise。|
+|await 的对象|	必须是 awaitable：coroutine、Task、Future。	|必须是 Promise（也可以是普通值，会自动包装成 resolved Promise）。|
+|事件循环管理|	Python 需要显式启动事件循环（如 asyncio.run()）。	|JS 的事件循环由运行时（如 Node.js、浏览器）自动管理。|
+|并发性|	使用 asyncio.create_task() 可以并发运行多个协程。	|使用 Promise.all()、Promise.race() 等实现并发。|
+|线程支持|	asyncio 默认是单线程的，但可以通过 loop.run_in_executor() 调用线程/进程。|	JS 是单线程的，但可以通过 Web Worker 实现多线程（浏览器端）。|
+|错误处理|	使用 try/except 捕获异常。	|使用 try/catch 捕获异常。|
+|返回值|	await 表达式的返回值就是协程的返回值。	|await 表达式的返回值是 Promise 的 resolve 值。|
+|是否可以脱离 async 函数使用|	❌ 不可以。await 只能在 async def 函数中使用。	|❌ 不可以。await 只能在 async function 中使用（但可以在 top-level module 中使用）。|
+|核心思想|更偏向 协程模型，强调协程之间的协作调度。强调显式控制事件循环（如 asyncio.run()）。更适合系统级并发（如网络服务器、爬虫等）。|更偏向 Promise 模型，强调链式调用和回调机制。事件循环由运行时自动管理，开发者几乎不接触。更适合前端异步交互（如 API 请求、DOM 操作等）。|
+
+### javascript中的async await 
+async/await 是语法糖： async 函数本质上返回一个 Promise。await 表达式会暂停 async 函数的执行，等待其后的 Promise 解决。当 Promise 解决后，其回调（即 await 之后的代码）被放入微任务队列，等待当前宏任务执行完后被调度执行。其回调机制，无论是早期的回调函数还是现代的 Promise/async/await，底层都依赖于将回调函数放入队列等待事件循环调度。
+
+await 主要用来等待 Promise 解决。控制权转移和回调入队是引擎在解析 Promise 链时隐式处理的。开发者主要关注 Promise 的状态流转。
+
+### python 中的async await 
+协程 (Coroutine)： 这是 Python 异步编程的核心抽象，比 JS 的回调更高级。 一种特殊的可挂起 (suspendable) 和 可恢复 (resumable) 的函数。它不是进程或线程，是用户态轻量级“线程”。await： 关键操作符，显式地 在协程内部标记一个“挂起点”，当协程执行到 await 表达式时，它会挂起自身的执行，事件循环就会接管控制权，去执行其他就绪的任务。当 await 等待的操作完成（如 I/O 就绪、定时器到期、其他协程返回结果），事件循环会在合适的时机（通常是下次轮询时）恢复该协程的执行，从 await 之后继续运行，并传入结果。
+
+await 是一个显式的、强制性的挂起点。它直接告诉事件循环：“我现在要等这个异步操作完成，你可以去干别的活了”。协程的执行流在 await 处清晰可见地被中断，并在操作完成后恢复。这使异步代码的逻辑更接近同步代码的线性思维，可读性通常更高。理解协程的关键就是理解 await 如何标记挂起点。
+
+
+## asyncio 库的使用
+Python 3.5及以上版本引入了asyncio库，支持异步编程和async/await语法。Python 示例假设我们有一个类似的场景，包括两个异步操作：从网络获取数据和写入文件。我们将使用asyncio库来实现这两个操作，并观察它们是如何并发执行的。
 ```python
 import asyncio
 import time
@@ -2263,7 +2429,7 @@ asyncio.run(main())
 通过这种方式，async/await使得异步代码更加简洁和高效，同时保持了良好的并发性能。希望这个解释和示例能帮助你更好地理解“当前的async函数会暂停执行，允许其他任务继续运行”的含义。如果有更多问题，欢迎继续提问。内容由AI生成
 已记录
 
-#### asyncio函数的使用举例2
+#### asyncio函数的使用举例
 asyncio 是 Python 的一个标准库，用于编写异步程序。它允许你编写并发代码，使用协程、任务和事件循环来处理 I/O 操作和其他阻塞操作，而不会阻塞主线程。
 1. 协程 (Coroutine)：
 - 协程是一种特殊的函数，可以暂停和恢复执行。在 Python 中，协程使用 async def 定义。
@@ -2309,8 +2475,13 @@ end_time = time.time()
 print(f"Total time: {end_time - start_time} seconds")
 ```
 
-#### create_task()的作用
-asyncio.create_task() 是 asyncio 库中的一个重要函数，用于**将一个协程包装成一个任务** <b class="danger">并立即排入事件循环中准备执行。</b> 主要作用有以下三个：
+### create_task()的作用
+asyncio.create_task() 是 asyncio 库中的一个重要函数，用于**将一个协程包装成一个任务task** <b class="danger">并调度它在事件循环中运行。</b> 
+<b class="info">create_task()</b>  是将协程包装为 Task，提交给事件循环统一调度，<b class="info">真正实现了“并发”。</b> 
+- create_task() 不会立即运行协程，而是将其加入事件循环中排队。
+- create_task() 创建任务后，需要通过 await task 来等待其结果或完成。await task 会阻塞当前协程直到任务完成。
+
+主要作用有以下三个：
 
 1. 创建任务：
 - create_task() 将一个协程对象（由 async def 定义的函数返回的对象）包装成一个 Task 对象。
@@ -2320,6 +2491,97 @@ asyncio.create_task() 是 asyncio 库中的一个重要函数，用于**将一�
 - 任务的执行是异步的，不会阻塞当前的执行流程。
 3. 返回任务对象：
 - create_task() 返回一个 Task 对象，你可以使用这个对象来检查任务的状态、获取任务的结果或取消任务。
+
+
+### asyncio.gather()的作用
+gather() 用于 <b class="success">并发运行多个协程或任务</b> ，并**收集**它们的**结果**。asyncio.gather(*coros_or_tasks) 接受**多个协程**或**任务对象**，传入协程时内部会**自动将协程包装成任务**（类似 create_task()），返回值是**按顺序**排列的协程返回值的**列表**。
+- asyncio.gather(*coros_or_tasks) 接受多个协程或任务对象，会并发执行它们。
+- asyncio.gather() 返回一个协程对象，必须用 await 来等待它完成。
+- 使用 await asyncio.gather(...) 会阻塞当前协程，直到所有传入的协程或任务完成。
+
+<b class="danger">asyncio.gather()方法的参数</b> 
+asyncio.gather()方法的参数，**是传入task还是传入一个异步函数？**
+- asyncio.gather() 的参数既可以是 异步函数调用（即协程对象），也可以是 已经创建好的 Task 对象，可以在 gather() 中混用协程和任务。
+- asyncio.gather(coroutine_obj) 内部会自动将这些协程对象封装成 Task 并发执行，asyncio.gather(task)的优势是可以提前控制任务的创建过程（对任务的某些操作）。
+
+<b class="info">等待多个任务中的某一个任务执行完即可的方法</b>
+
+`asyncio.wait()` 会自动将协程对象包装成 Task 对象
+```python
+async def main():
+    # 创建任务列表
+    tasks = [task1(), task2()]
+    
+    # 等待第一个完成的任务
+    done, pending = await asyncio.wait(
+        tasks,
+        return_when=asyncio.FIRST_COMPLETED
+    )
+```
+
+### asyncio.run()的作用
+asyncio.run() 会自动创建一个事件循环（event loop），运行传入的协程（即run方法中的参数），并在完成后清理事件循环。一次只能运行一个主协程。
+
+### await的作用
+await 用于**等待**一个 **协程、任务或 Future** 完成。它只能在 async def 定义的协程函数中使用。await 会挂起当前协程，让事件循环去执行其他任务，直到被等待的对象完成。
+await task 会阻塞当前协程直到任务完成。
+
+### 运行协程的几种方式
+- 如果你只需要运行一个主协程，使用 asyncio.run(main())。
+- 如果你想**并发运行**多个协程并等待它们完成，使用 asyncio.gather()。
+- 如果你需要更细粒度地控制任务（比如取消、查询状态等），使用 asyncio.create_task() 并手动 await 每个任务。
+
+
+
+### await async_fn 和 await task的本质区别
+- **await async_fn()** 表示当前协程会 按顺序同步地 执行这个协程的代码，直到它完成。它不会被调度到事件循环中并发运行，而是由当前协程“亲自”一步步推进它的执行流程。同步执行（顺序执行），不支持并发。
+- **await task** asyncio.create_task(fn()) 把协程封装成一个 Task 对象，并立即加入事件循环排队执行。await task 表示会挂起当前任务，让事件循环去运行其他任务，等这个任务完成后才继续。并发执行（多个任务可以同时在事件循环中跑），支持取消，查询等高级操作。
+```python
+import asyncio
+import time
+
+async def count(name, n):
+    for i in range(1, n+1):
+        print(f"{name}: {i}")
+        await asyncio.sleep(0.5)
+
+async def main():
+    await count("A", 3)
+    await count("B", 3)
+
+asyncio.run(main())
+# 同步执行，耗时3s，返回
+A 1
+A 2
+A 3
+B 1
+B 2
+B 3
+
+## 使用封装task的方式
+async def main():
+    task1 = asyncio.create_task(count("A", 3))
+    task2 = asyncio.create_task(count("B", 3))
+
+    await task1
+    await task2
+
+asyncio.run(main())
+# 并发执行，耗时1.5s，返回
+A 1
+B 1
+A 2
+B 2
+A 3
+B 3
+
+## 更简洁的写法,task方式的语法糖
+async def main():
+    await asyncio.gather(count("A", 3), count("B", 3))
+```
+- **await async_fn** 当不需要并发执行时，或想严格执行顺序，或协程之间有严格依赖关系，使用await async_fn()
+- **await task** 当需要并发执行多个独立的任务，或任务之间无依赖，需要提升CPU或IO效率时，使用await task
+
 
 ```python
 import asyncio
@@ -2369,7 +2631,11 @@ else:
     asyncio.run(say_after(1, 'hello'))
 ```
 
+<b class="info">python中await 的本质</b> 
+python中，理解 await 的本质： 把 await 看作一个检查点或让出点。每次遇到 await，当前协程就主动暂停，把执行权交还给事件循环。事件循环利用这段时间去做其他事情（运行其他就绪协程、检查I/O、处理定时器）。等 await 的东西准备好了，事件循环再把执行权还给这个协程，从 await 后面继续执行。
 
+<b class="info">python中 task 的本质</b> 
+掌握 Task 的创建： 明白 asyncio.create_task() 是并发执行多个协程的核心手段。它把一个协程对象调度到事件循环上，使其能与其他协程并发运行（在遇到 await 挂起时切换）。
 
 
 
@@ -3266,9 +3532,9 @@ print(user.email)  # 输出: john.doe@example.com
 typing模块可以实现**类型标注（Type Annotations）**或称为**类型提示（Type Hints）**。允许在函数定义中**指定参数和返回值的预期类型。** 类型标注不是强制性的：Python 是动态类型语言，类型标注不会影响代码的运行时行为。它们主要用于开发和调试阶段。
 
 类型标注的作用
-- 提高代码可读性，类型标注可以帮助其他开发者（包括未来的你自己）更容易理解函数的意图和用法。通过明确指出参数和返回值的类型，减少了阅读代码时的猜测。
-- 静态类型检查。**使用工具如 mypy**，可以在不运行代码的情况下检查类型错误，从而捕获潜在的bug。有助于在开发早期发现类型不匹配的问题，减少调试时间。
-- 文档生成。类型标注可以用于生成文档，帮助其他开发者了解函数的参数和返回值类型。
+- 提高代码**可读性**，类型标注可以帮助其他开发者（包括未来的你自己）更容易理解函数的意图和用法。通过明确指出参数和返回值的类型，减少了阅读代码时的猜测。
+- **静态类型检查**。**使用工具如 mypy**，可以在不运行代码的情况下检查类型错误，从而捕获潜在的bug。有助于在开发早期发现类型不匹配的问题，减少调试时间。
+- **文档生成**。类型标注可以用于生成文档，帮助其他开发者了解函数的参数和返回值类型。
 
 <b class="danger">Optional 通常用于表示一个变量可以是某种类型或者为 None,Optional 实际上是 Union[T, None] 的简写形式，其中 T 是任意类型。这意味着 Optional[T] 表示该值要么是类型 T 的实例，要么是 None。</b> 
 `self.session: Optional[ClientSession] = None` ,定义并初始化一个可选类型的实例属性 self.session，类型为 ClientSession 或 None,将 self.session 的初始值设置为 None，表示在对象初始化时，该属性还没有被赋值为具体的 ClientSession 实例。
@@ -3430,6 +3696,65 @@ jieba: 中文分词
 openpyxl: 读写excel文件，支持xlsx格式
 
 
+### 8.处理http请求的库
+httpx: 快速、支持异步、可扩展的HTTP库,支持http1.1和http2
+```python
+try:
+    response = httpx.get("https://www.example.com/")
+    response.raise_for_status()
+except httpx.HTTPError as exc:
+    print(f"Error while requesting {exc.request.url!r}.")
+
+
+# 显式的处理发起请求和接收响应时的两种情况的错误
+try:
+    response = httpx.get("https://www.example.com/")
+    response.raise_for_status()
+except httpx.RequestError as exc:
+    print(f"An error occurred while requesting {exc.request.url!r}.")
+except httpx.HTTPStatusError as exc:
+    print(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}.")
+
+```
+
+创建一个客户端实例并复用它来发送多个请求 **async with httpx.AsyncClient() as client:** ,这样做的好处是可以保持连接（持久连接），提高性能，并且可以共享配置（如 headers、cookies、认证信息等）。相比之下，使用 **httpx.post() 会发送多次请求**会导致每次都新建连接，这会增加延迟。
+```python
+## 并发方式一、使用asyncio.gather()
+async def fetch():
+    async with httpx.AsyncClient() as client:
+        resp1, resp2 = await asyncio.gather(
+            client.get("https://httpbin.org/get"),
+            client.get("https://abcde/get")
+        )
+        print(resp1.status_code, resp2.status_code)
+
+## 并发方式二、使用create_task()+await
+async def fetch():
+    async with httpx.AsyncClient() as client:
+        task1 = asyncio.create_task(client.get("https://httpbin.org/get"))
+        task2 = asyncio.create_task(client.get("https://abcde/get"))
+
+        resp1 = await task1
+        resp2 = await task2
+
+        print(resp1.status_code, resp2.status_code)
+```
+
+```python
+## 这种方式是串行执行的，非并发。
+async def fetch():
+    async with httpx.AsyncClient() as client:
+        response1 = await client.get("https://httpbin.org/get")
+        response2 = await client.get("https://abcde/get")
+
+```
+
+
+
+
+### 9.mcp开发工具
+`uv add "mcp[cli]"`
+
 ## 安装pip
 1. 在Python官网上下载Windows版本pip安装包
 https://pypi.org/project/pip/#downloads
@@ -3529,6 +3854,19 @@ pip 安装的包通常存放在 Python 的 site-packages 目录中。
 conda 在不同环境中安装的包存放在其对应的环境目录下。
 `C:\Users\<username>\Anaconda3\envs\<env_name>\pkgs`
 
+
+## uv工具链
+uv 是一个新兴的工具，用于管理 Python 项目依赖、构建虚拟环境和运行测试等任务。
+```shell
+uv init weather # 在当前目录初始化一个weather的项目
+cd weather # 进入项目目录
+uv venv # 创建虚拟环境
+source .venv/bin/activate # 激活虚拟环境
+uv add "numpy" # uv add 不仅安装依赖，还会同步更新
+```
+uv add package_name 命令会自动更新项目的 pyproject.toml 文件，记录新添加的依赖及其版本信息
+
+<b class="danger">参数 --active 表示将命令在当前已激活的虚拟环境下执行</b>，如果不加该参数则在当前默认的环境下执行
 
 ## WSL2
 1. 开启CPU虚拟化，进入BIOS设置，intel vmx virtualization technology 开启，amd AMD-V 开启
