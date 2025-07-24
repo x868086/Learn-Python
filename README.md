@@ -1915,6 +1915,28 @@ f4.\_\_name\_\_ 函数的名称仍然是f4,
 f4.\_\_doc\_\_ 函数的注释还是原函数的注释
 
 
+## with as 语法
+with...as 语句是上下文管理器的语法糖，用于资源管理。主要目的是确保资源在使用后被正确释放，即使代码块发生了异常也能被关闭，**避免忘记释放资源的问题。**
+```python
+with expression as variable:
+    # 代码块
+```
+
+expression 返回一个**上下文管理器对象**，调用上下文管理器的__enter__()方法，将__enter__()的返回值赋值给as后面的变量。执行代码块，无论代码块是否发生异常，都会调用__exit__()方法。
+常见的使用场景
+1. 文件操作（自动关闭文件）
+```python
+with open('file.txt','r') as f:
+    content = f.read()
+```
+2. 数据库链接（自动关闭连接）
+```python
+with psycopg2.connect(database='test') as conn:
+    with conn.cursor() as cursor:
+        cursor.execute('select * from users')
+```
+
+
 ## python编程技巧
 #### 1. 使用<b class="danger">表驱动编程</b>，替代match
 ```python 
@@ -2195,6 +2217,16 @@ for i in g:
 
 
 ## python异步编程
+1. 同步(synchronous) 代码按顺序逐行执行,前一个操作完之后才能执行下一个，会阻塞后续代码执行。
+2. 异步(Asynchronous)操作发起后立即继续执行后续代码，不等待当前操作完成，通过回调，promise，async/await处理结果。
+3. 串行(serial)任务按顺序一个接一个执行，前一个任务完成才开始下一个，总执行时间是各任务时间之和。
+4. 并行(parallel)多个任务同事在不同cpu核心/线程执行，需要多核/多线程支持，显著减少执行时间。
+5. 并发(concurrent)，多个任务**交替执行**（单核上），通过时间片轮转实现“同时”执行的假象，不需要多核心硬件。
+
+**并行是真正的物理同时执行**
+**并发是逻辑上的同时执行**
+**异步是一种编程模式，可用语实现高并发**
+
 <b class="success">异步函数即协程</b> 
 协程**coroutine**是一种比线程更轻量的**用户态**并发执行单元，可以理解为协作式多任务处理的基本单位。它允许在函数执行过程中，在任意位置暂停（suspend）执行，并在之后恢复（resume）执行，保持其状态不变。<b class="info">协程是协作式多任务的基本单位。任务是事件循环调度的最小单位。</b> 
 <b class="danger">暂停当前协程的执行，交出控制权给事件循环.</b>
@@ -2206,7 +2238,7 @@ async def fn():
 ``` 
 
 
-<b class="success">1. 正确执行协程函数coroutine function的方法</b>
+<b class="success">1. 正确执行协程即异步函数coroutine function的方法</b>
 - 方法1：**使用await** 在另一个coroutine function 中
 ```python
 async def fn1():
@@ -2523,7 +2555,7 @@ async def main():
 asyncio.run() 会自动创建一个事件循环（event loop），运行传入的协程（即run方法中的参数），并在完成后清理事件循环。一次只能运行一个主协程。
 
 ### await的作用
-await 用于**等待**一个 **协程、任务或 Future** 完成。它只能在 async def 定义的协程函数中使用。await 会挂起当前协程，让事件循环去执行其他任务，直到被等待的对象完成。
+await 用于**等待**一个 **协程、任务或 Future** 完成。它只能在 async def 定义的协程函数中使用。await 会挂起当前协程，**让事件循环去执行其他任务**，直到被等待的对象完成。
 await task 会阻塞当前协程直到任务完成。
 
 ### 运行协程的几种方式
@@ -2534,7 +2566,7 @@ await task 会阻塞当前协程直到任务完成。
 
 
 ### await async_fn 和 await task的本质区别
-- **await async_fn()** 表示当前协程会 按顺序同步地 执行这个协程的代码，直到它完成。它不会被调度到事件循环中并发运行，而是由当前协程“亲自”一步步推进它的执行流程。同步执行（顺序执行），不支持并发。
+- **await async_fn()** 表示当前协程会 按顺序同步地 执行这个协程的代码，直到它完成。**它不会被调度到事件循环中并发运行**，而是由当前协程“亲自”一步步推进它的执行流程。同步执行（顺序执行），不支持并发。
 - **await task** asyncio.create_task(fn()) 把协程封装成一个 Task 对象，并立即加入事件循环排队执行。await task 表示会挂起当前任务，让事件循环去运行其他任务，等这个任务完成后才继续。并发执行（多个任务可以同时在事件循环中跑），支持取消，查询等高级操作。
 ```python
 import asyncio
@@ -2632,7 +2664,7 @@ else:
 ```
 
 <b class="info">python中await 的本质</b> 
-python中，理解 await 的本质： 把 await 看作一个检查点或让出点。每次遇到 await，当前协程就主动暂停，把执行权交还给事件循环。事件循环利用这段时间去做其他事情（运行其他就绪协程、检查I/O、处理定时器）。等 await 的东西准备好了，事件循环再把执行权还给这个协程，从 await 后面继续执行。
+python中，理解 await 的本质： 把 await 看作一个检查点或让出点。每次遇到 await，当前协程就主动暂停，把执行权**交还给事件循环**。事件循环利用这段时间去做其他事情（运行其他就绪协程、检查I/O、处理定时器）。等 await 的东西准备好了，事件循环再把执行权还给这个协程，从 await 后面继续执行。
 
 <b class="info">python中 task 的本质</b> 
 掌握 Task 的创建： 明白 asyncio.create_task() 是并发执行多个协程的核心手段。它把一个协程对象调度到事件循环上，使其能与其他协程并发运行（在遇到 await 挂起时切换）。
@@ -3717,7 +3749,7 @@ except httpx.HTTPStatusError as exc:
 
 ```
 
-创建一个客户端实例并复用它来发送多个请求 **async with httpx.AsyncClient() as client:** ,这样做的好处是可以保持连接（持久连接），提高性能，并且可以共享配置（如 headers、cookies、认证信息等）。相比之下，使用 **httpx.post() 会发送多次请求**会导致每次都新建连接，这会增加延迟。
+创建一个客户端实例并复用它来发送多个请求 **async with httpx.AsyncClient() as client:** ,这样做的好处是可以保持连接（持久连接），提高性能，并且可以共享配置（如 headers、cookies、认证信息等）。相比之下，使用 **httpx.post() 会发送多次请求**会导致每次都新建连接（三次握手），这会增加延迟。
 ```python
 ## 并发方式一、使用asyncio.gather()
 async def fetch():
